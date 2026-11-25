@@ -23,5 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-# Flutter web build, copied by `npm run play` (46 MB, regenerated)
-public/play/
