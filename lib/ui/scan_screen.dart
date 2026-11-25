@@ -371,7 +371,7 @@ class _Feedback extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 52),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: .12),
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: color.withValues(alpha: .5)),
         ),
@@ -408,19 +408,11 @@ class _SeatChip extends StatelessWidget {
       button: true,
       selected: current,
       label: '$name, ${role == null ? 'no role' : role!.info.name}',
-      child: Material(
-        color: Colors.transparent,
-        child: Ink(
-          decoration: BoxDecoration(
-            color: current
-                ? AppColors.primary.withValues(alpha: .18)
-                : AppColors.surface,
-            borderRadius: radius,
-            border: Border.all(color: current ? AppColors.primary : AppColors.line),
-          ),
-          child: InkWell(
-            borderRadius: radius,
-            onTap: onTap,
+      child: Pressable(
+        onTap: onTap,
+        color: AppColors.surface,
+        border: current ? AppColors.primary : null,
+        borderRadius: radius,
             child: ExcludeSemantics(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 44, maxWidth: 160),
@@ -451,8 +443,6 @@ class _SeatChip extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ),
       ),
     );
   }
