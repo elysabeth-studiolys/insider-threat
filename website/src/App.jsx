@@ -70,8 +70,8 @@ const FEATURES = [
 
 const ROLES = [
   { img: '/characters/red_team_card.jpg', name: 'Red Team', team: 'red', full: true },
-  { img: '/characters/soc_analyst.png', name: 'SOC Analyst', team: 'blue' },
-  { img: '/characters/incident_responder.png', name: 'Incident Responder', team: 'blue' },
+  { img: '/characters/defender_card.jpg', name: 'Defender', team: 'blue' },
+  { img: '/characters/network_engineer_card.jpg', name: 'Network Engineer', team: 'blue' },
 ];
 
 export default function App() {
@@ -83,8 +83,11 @@ export default function App() {
           <span>Insider Threat</span>
         </a>
         <nav className="topbar__nav">
+<<<<<<< HEAD
           <a href="#cards" className="chip chip--link">Print the cards</a>
           <a href="#download" className="chip chip--link">Get the app</a>
+=======
+>>>>>>> 49310b656eec834b647985499b68c3ad21bf457d
           {LINKS.web && (
             <a href={LINKS.web} className="btn btn--primary btn--sm" target="_blank" rel="noopener noreferrer">
               <span className="btn__icon"><PlayIcon /></span>
@@ -148,9 +151,8 @@ export default function App() {
           </div>
           <div className="roles">
             {ROLES.map((r) => (
-              <figure key={r.name} className={`role role--${r.team}${r.full ? ' role--full' : ''}`}>
-                <img src={r.img} alt="" loading="lazy" />
-                <figcaption>{r.name}</figcaption>
+              <figure key={r.name} className={`role${r.full ? ' role--full' : ''}`}>
+                <img src={r.img} alt={`${r.name} role card`} loading="lazy" />
               </figure>
             ))}
           </div>

@@ -11,13 +11,17 @@ import 'widgets.dart';
 /// Official character art, by role. Roles without art leave the space blank.
 const Map<RoleId, String> roleArt = {
   RoleId.incidentResponder: 'assets/characters/incident_responder.png',
-  RoleId.socAnalyst: 'assets/characters/soc_analyst.png',
 };
 
 /// Finished card illustrations (frame, art and text in one picture). A role
-/// listed here shows this picture as its whole character side.
+/// listed here shows this picture as its whole character side, on the Rules
+/// page and in the Threat Hunter reveal.
 const Map<RoleId, String> roleCardArt = {
-  RoleId.red: 'assets/characters/red_team_card.jpg',
+  RoleId.red: 'assets/characters/red_team_card.png',
+  RoleId.defender: 'assets/characters/defender_card.png',
+  RoleId.networkEngineer: 'assets/characters/network_engineer_card.png',
+  RoleId.socAnalyst: 'assets/characters/soc_analyst_card.png',
+  RoleId.threatHunter: 'assets/characters/threat_hunter_card.png',
 };
 
 const _radius = BorderRadius.all(Radius.circular(18));
