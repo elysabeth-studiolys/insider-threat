@@ -52,8 +52,8 @@ const FEATURES = [
 
 const ROLES = [
   { img: '/characters/red_team_card.jpg', name: 'Red Team', team: 'red', full: true },
-  { img: '/characters/soc_analyst.png', name: 'SOC Analyst', team: 'blue' },
-  { img: '/characters/incident_responder.png', name: 'Incident Responder', team: 'blue' },
+  { img: '/characters/defender_card.jpg', name: 'Defender', team: 'blue' },
+  { img: '/characters/network_engineer_card.jpg', name: 'Network Engineer', team: 'blue' },
 ];
 
 export default function App() {
@@ -128,9 +128,8 @@ export default function App() {
           </div>
           <div className="roles">
             {ROLES.map((r) => (
-              <figure key={r.name} className={`role role--${r.team}${r.full ? ' role--full' : ''}`}>
-                <img src={r.img} alt="" loading="lazy" />
-                <figcaption>{r.name}</figcaption>
+              <figure key={r.name} className={`role${r.full ? ' role--full' : ''}`}>
+                <img src={r.img} alt={`${r.name} role card`} loading="lazy" />
               </figure>
             ))}
           </div>
