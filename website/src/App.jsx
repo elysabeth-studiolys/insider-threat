@@ -178,8 +178,11 @@ function DownloadCard({ href, kicker, label, hint, icon, primary }) {
       <span className="download__hint">{ready ? hint : 'Coming soon'}</span>
     </>
   );
+  // A file (the APK) downloads in place; a page (web build, store) opens in a new tab.
+  const isFile = ready && /\.apk$/i.test(href);
+  const linkProps = isFile ? { download: '' } : { target: '_blank', rel: 'noopener noreferrer' };
   return ready ? (
-    <a className={className} href={href} target="_blank" rel="noopener noreferrer">
+    <a className={className} href={href} {...linkProps}>
       {body}
     </a>
   ) : (

@@ -60,7 +60,6 @@ GuideStep _buildNight(GameController c) {
         kind: kind,
         kicker: 'Everyone',
         title: 'Nightfall',
-        sub: 'Eyes closed',
         tag: ev == null ? null : 'Event: ${ev.info.title}',
         say: 'Night falls on CORP-LAN. All employees, log off and close your eyes.'
             '${ev == EventCard.powerOutage ? ' Power outage: all special powers are offline tonight.' : ''}'
@@ -80,10 +79,9 @@ GuideStep _buildNight(GameController c) {
       final out = gone(ne);
       return GuideStep(
         kind: kind,
-        kicker: 'Night 1 only',
+        kicker: out ? 'Read it anyway' : ne!.name,
         title: 'Network Engineer',
         team: Team.blue,
-        sub: out ? 'Read it anyway' : ne!.name,
         tag: out ? 'Eliminated' : null,
         say:
             'Network Engineer, wake up. Point at two machines to link with a VPN tunnel. Network Engineer, go back to sleep.',
@@ -111,10 +109,9 @@ GuideStep _buildNight(GameController c) {
       final b = linked ? c.players[c.link[1]] : null;
       return GuideStep(
         kind: kind,
-        kicker: 'Night 1 only',
+        kicker: linked ? '${a!.name} and ${b!.name}' : 'Nobody linked',
         title: 'Linked machines',
         team: Team.purple,
-        sub: linked ? '${a!.name} and ${b!.name}' : 'Nobody linked',
         say:
             'I will tap the two linked machines. Linked machines, open your eyes and recognise each other. If one of you goes down, the other goes down too. Close your eyes.',
         todo: linked
@@ -132,10 +129,9 @@ GuideStep _buildNight(GameController c) {
       final picks = c.sel('hunter');
       return GuideStep(
         kind: kind,
-        kicker: 'Wakes up',
+        kicker: out ? 'Read it anyway' : th!.name,
         title: 'Threat Hunter',
         team: Team.blue,
-        sub: out ? 'Read it anyway' : th!.name,
         tag: out ? 'Eliminated' : null,
         say: need == 2
             ? 'Threat Hunter, wake up. Tonight, you may inspect two machines. Point at the machines you want to inspect. Threat Hunter, go back to sleep.'
@@ -188,10 +184,9 @@ GuideStep _buildNight(GameController c) {
       final need = twice ? min(2, targets) : 1;
       return GuideStep(
         kind: kind,
-        kicker: 'Wakes up',
+        kicker: attackers.map((p) => p.name).join(', '),
         title: 'Red Team',
         team: Team.red,
-        sub: attackers.map((p) => p.name).join(', '),
         say: twice
             ? 'Red Team, wake up. Look at each other. With the stolen credentials, silently choose two machines to compromise. Red Team, go back to sleep.'
             : 'Red Team, wake up. Look at each other. Silently choose one machine to compromise. Red Team, go back to sleep.',
@@ -261,10 +256,9 @@ GuideStep _buildNight(GameController c) {
       final out = gone(pu);
       return GuideStep(
         kind: kind,
-        kicker: 'Every second night',
+        kicker: out ? 'Read it anyway' : pu!.name,
         title: 'Purple Team',
         team: Team.purple,
-        sub: out ? 'Read it anyway' : pu!.name,
         tag: out ? 'Eliminated' : null,
         say:
             'Purple Team, wake up. You may take down one member of the Red Team. Go back to sleep.',
@@ -312,10 +306,9 @@ GuideStep _buildNight(GameController c) {
       }
       return GuideStep(
         kind: kind,
-        kicker: 'Wakes up',
+        kicker: out ? 'Read it anyway' : ir!.name,
         title: 'Incident Responder',
         team: Team.blue,
-        sub: out ? 'Read it anyway' : ir!.name,
         tag: out ? 'Eliminated' : null,
         say: say,
         todo: out
@@ -358,7 +351,6 @@ GuideStep _buildNight(GameController c) {
         kind: kind,
         kicker: 'Everyone',
         title: 'Dawn',
-        sub: 'Eyes open',
         say: 'The night is over. Everyone, open your eyes.',
         todo: 'The night ambience fades out by itself. Move on to the morning report.',
         primaryLabel: 'Morning report',

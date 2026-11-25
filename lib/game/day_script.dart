@@ -31,7 +31,7 @@ GuideStep _buildDay(GameController c) {
       }
       return GuideStep(
         kind: StepKind.morning,
-        kicker: 'Announce',
+        kicker: '',
         title: 'Morning report',
         sub:
             '${downs.length} ${downs.length == 1 ? 'machine' : 'machines'} offline',
@@ -49,9 +49,8 @@ GuideStep _buildDay(GameController c) {
     case DayStage.election:
       return GuideStep(
         kind: StepKind.election,
-        kicker: 'Open vote, 1 minute',
+        kicker: '',
         title: 'CISO election',
-        sub: 'Double vote, breaks ties',
         say:
             'Before the debate, the network elects its CISO. Everyone points at one machine. The CISO\'s vote counts double.',
         todo: 'Run a one minute open vote, then tap the elected machine.',

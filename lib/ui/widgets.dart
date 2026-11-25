@@ -625,86 +625,152 @@ class _CountdownClockState extends State<CountdownClock> {
   String get _text =>
       '${(_left ~/ 60).toString().padLeft(2, '0')}:${(_left % 60).toString().padLeft(2, '0')}';
 
+  void _start() => setState(() {
+    _started = true;
+    _running = true;
+  });
+
+  void _addMinute() => setState(() {
+    _stopWarning();
+    _left += 60;
+    if (_left > _max) _max = _left;
+  });
+
+  String get _status {
+    if (_left == 0) return "Time's up";
+    if (!_started) return 'Ready';
+    return _running ? 'Running' : 'Paused';
+  }
+
   @override
   Widget build(BuildContext context) {
     final over = _left == 0;
+    final big = widget.spec.controls;
+    final ring = big ? 190.0 : 150.0;
+    final accent = over ? AppColors.danger : AppColors.primary;
+    // Empty ring until the clock is started, then it drains.
+    final progress = !_started || _max == 0 ? 0.0 : _left / _max;
     return Semantics(
-      label: '${widget.spec.label}: $_text',
+      label: '${widget.spec.label}: $_text, $_status',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Lbl(widget.spec.label),
-          const SizedBox(height: 6),
-          Text(
-            _text,
-            style:
-                AppText.mono(
-                  widget.spec.controls ? 60 : 44,
-                  weight: FontWeight.w700,
-                  color: over ? AppColors.danger : AppColors.text,
-                  height: 1,
-                ).copyWith(
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                  shadows: [
-                    Shadow(
-                      color: AppColors.primary.withValues(alpha: .35),
-                      blurRadius: 28,
+          const SizedBox(height: 10),
+          Center(
+            child: SizedBox(
+              width: ring,
+              height: ring,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(end: progress),
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeOut,
+                    builder: (_, v, _) => CircularProgressIndicator(
+                      value: v,
+                      strokeWidth: big ? 10 : 8,
+                      strokeCap: StrokeCap.round,
+                      backgroundColor: AppColors.line,
+                      color: accent,
                     ),
-                  ],
-                ),
-          ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(3),
-            child: LinearProgressIndicator(
-              value: _max == 0 ? 0 : _left / _max,
-              minHeight: 6,
-              backgroundColor: AppColors.line,
-              color: over ? AppColors.danger : AppColors.primary,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _text,
+                        style:
+                            AppText.mono(
+                              big ? 44 : 34,
+                              weight: FontWeight.w700,
+                              color: over
+                                  ? AppColors.danger
+                                  : _started
+                                  ? AppColors.text
+                                  : AppColors.textSoft,
+                              height: 1,
+                            ).copyWith(
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
+                            ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        _status,
+                        style: AppText.body(
+                          13,
+                          color: over ? AppColors.danger : AppColors.muted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          if (!_started) ...[
-            const SizedBox(height: 12),
-            NeonButton(
-              label: 'Start',
-              height: 46,
-              fontSize: 13,
-              onPressed: () => setState(() {
-                _started = true;
-                _running = true;
-              }),
-            ),
-          ] else if (widget.spec.controls) ...[
-            const SizedBox(height: 12),
+          if (!_started || widget.spec.controls) ...[
+            const SizedBox(height: 14),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: NeonButton(
-                    label: _running ? 'Pause' : 'Resume',
-                    variant: NeonVariant.ghost,
-                    height: 46,
-                    fontSize: 13,
-                    onPressed: _toggleRunning,
-                  ),
+                SizedBox(
+                  width: 96,
+                  child: _started && widget.spec.controls
+                      ? NeonButton(
+                          label: '+ 1 min',
+                          variant: NeonVariant.ghost,
+                          height: 40,
+                          fontSize: 12,
+                          onPressed: _addMinute,
+                        )
+                      : null,
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: NeonButton(
-                    label: '+ 1 min',
-                    variant: NeonVariant.ghost,
-                    height: 46,
-                    fontSize: 13,
-                    onPressed: () => setState(() {
-                      _stopWarning();
-                      _left += 60;
-                      if (_left > _max) _max = _left;
-                    }),
-                  ),
+                const SizedBox(width: 16),
+                _RoundPlayButton(
+                  running: _running,
+                  onPressed: _started ? _toggleRunning : _start,
                 ),
+                const SizedBox(width: 112),
               ],
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// Round start / pause / resume button under the [CountdownClock] ring.
+class _RoundPlayButton extends StatelessWidget {
+  const _RoundPlayButton({required this.running, required this.onPressed});
+
+  final bool running;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: running ? 'Pause' : 'Start',
+      child: Material(
+        color: running ? AppColors.surfaceHigh : AppColors.primary,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: SizedBox(
+            width: 60,
+            height: 60,
+            child: Icon(
+              running ? Icons.pause_rounded : Icons.play_arrow_rounded,
+              size: 32,
+              color: running ? AppColors.text : AppColors.onAccent,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -733,7 +799,10 @@ class DownList extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Quiet night',
-                      style: AppText.body(compact ? 15 : 17, weight: FontWeight.w600),
+                      style: AppText.body(
+                        compact ? 15 : 17,
+                        weight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   Text(
@@ -770,10 +839,14 @@ class _DownRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.team(entry.team);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: compact ? 10 : 14),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: compact ? 10 : 14,
+      ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
+          Flexible(
             child: Text(
               entry.name,
               maxLines: 1,

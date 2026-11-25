@@ -3,9 +3,8 @@
 export const LINKS = {
   // Flutter web build, e.g. "/play/" once deployed next to this site.
   web: '/play/',
-  // GitHub Release asset, e.g.
-  // "https://github.com/elysabeth-studiolys/insider-threat/releases/latest/download/insider-threat.apk"
-  apk: null,
+  // Android APK, committed in public/downloads/ and served by the site.
+  apk: '/downloads/insider-threat.apk',
   // App Store or TestFlight link.
   appStore: null,
 };

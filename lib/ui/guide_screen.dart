@@ -90,11 +90,7 @@ class GuideScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 16, 20, 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    primary,
-                    const SizedBox(height: 10),
-                    back,
-                  ],
+                  children: [primary, const SizedBox(height: 10), back],
                 ),
               ),
             ),
@@ -152,24 +148,49 @@ class _StepBody extends StatelessWidget {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Lbl(step.kicker),
-          const SizedBox(height: 6),
+          // Without a subtitle (night steps), who is concerned sits above the
+          // title: team icon, names or "Everyone", and the tag.
+          if (step.sub.isEmpty &&
+              (step.kicker.isNotEmpty || step.team != null || step.tag != null))
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (step.team != null) TeamPerson(step.team!),
+                if (step.kicker.isNotEmpty)
+                  Text(
+                    step.kicker,
+                    style: AppText.body(15, color: AppColors.textSoft),
+                  ),
+                if (step.tag != null) TagChip(step.tag!, danger: true),
+              ],
+            )
+          else if (step.sub.isNotEmpty && step.kicker.isNotEmpty)
+            Lbl(step.kicker),
+          if (step.kicker.isNotEmpty ||
+              (step.sub.isEmpty && (step.team != null || step.tag != null)))
+            const SizedBox(height: 6),
           Text(
             step.title.toUpperCase(),
             style: AppText.ui(34, weight: FontWeight.w700, height: 1.04),
           ),
-          const SizedBox(height: 6),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              if (step.team != null) TeamPerson(step.team!),
-              if (step.sub.isNotEmpty)
-                Text(step.sub, style: AppText.body(15, color: AppColors.textSoft)),
-              if (step.tag != null) TagChip(step.tag!, danger: true),
-            ],
-          ),
+          if (step.sub.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (step.team != null) TeamPerson(step.team!),
+                Text(
+                  step.sub,
+                  style: AppText.body(15, color: AppColors.textSoft),
+                ),
+                if (step.tag != null) TagChip(step.tag!, danger: true),
+              ],
+            ),
+          ],
         ],
       ),
       if (step.event != null)
@@ -184,7 +205,8 @@ class _StepBody extends StatelessWidget {
       SayCard(text: step.say),
       // Beginner help: what the Narrator does now. Hidden for experienced
       // Narrators (Settings > Narrator tips), like the reminder lines below.
-      if (AppSettings.instance.narratorTips && step.todo.isNotEmpty) TipCard(text: step.todo),
+      if (AppSettings.instance.narratorTips && step.todo.isNotEmpty)
+        TipCard(text: step.todo),
       if (step.secret != null) SecretCard(text: step.secret!),
       if (step.quiz != null)
         QuizPanel(spec: step.quiz!, onCount: game.setQuizCorrect),
@@ -210,11 +232,17 @@ class _StepBody extends StatelessWidget {
         for (final r in step.results) ResultRow(line: r),
       if (step.reveal.isNotEmpty)
         NeonButton(
-          label: step.reveal.length > 1 ? 'Show the cards again' : 'Show the card again',
+          label: step.reveal.length > 1
+              ? 'Show the cards again'
+              : 'Show the card again',
           variant: NeonVariant.ghost,
           height: 48,
           fontSize: 14,
-          onPressed: () => showRoleReveal(context, viewer: step.revealTo, cards: step.reveal),
+          onPressed: () => showRoleReveal(
+            context,
+            viewer: step.revealTo,
+            cards: step.reveal,
+          ),
         ),
     ];
 
