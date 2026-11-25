@@ -64,7 +64,15 @@ export default function App() {
           <img src="/brand/favicon.svg" alt="" width="28" height="28" />
           <span>Insider Threat</span>
         </a>
-        <a href="#download" className="chip chip--link">Get the app</a>
+        <nav className="topbar__nav">
+          <a href="#download" className="chip chip--link">Get the app</a>
+          {LINKS.web && (
+            <a href={LINKS.web} className="btn btn--primary btn--sm" target="_blank" rel="noopener noreferrer">
+              <span className="btn__icon"><PlayIcon /></span>
+              Play on web
+            </a>
+          )}
+        </nav>
       </header>
 
       <main id="top">
@@ -178,6 +186,14 @@ function DownloadCard({ href, kicker, label, hint, icon, primary }) {
     <div className={className} aria-disabled="true">
       {body}
     </div>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5.5v13a1 1 0 0 0 1.52.85l10.4-6.5a1 1 0 0 0 0-1.7L9.52 4.65A1 1 0 0 0 8 5.5Z" />
+    </svg>
   );
 }
 
