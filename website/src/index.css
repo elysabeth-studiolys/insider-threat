@@ -355,6 +355,8 @@ a.download:hover { border-color: var(--primary); transform: translateY(-2px); }
 }
 
 .downloads__note { margin: 24px 0 0; font-size: 14px; color: var(--muted); }
+.downloads__note a { color: var(--primary); }
+.print-steps { margin-top: 16px; }
 
 /* ---------- Footer ---------- */
 .footer {

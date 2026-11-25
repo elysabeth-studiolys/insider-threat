@@ -5,6 +5,8 @@ export const LINKS = {
   web: '/play/',
   // Android APK, committed in public/downloads/ and served by the site.
   apk: '/downloads/insider-threat.apk',
+  // Printable role cards (A4 PDF), committed in public/downloads/.
+  cards: '/downloads/insider-threat-cards.pdf',
   // App Store or TestFlight link.
   appStore: null,
 };

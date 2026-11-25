@@ -25,6 +25,24 @@ const DOWNLOADS = [
   },
 ];
 
+const PRINT_STEPS = [
+  {
+    n: '01',
+    title: 'Print double-sided',
+    text: 'A4, double-sided, flip on long edge, at actual size (100 %). Each card gets its QR code on the back.',
+  },
+  {
+    n: '02',
+    title: 'Use thick paper',
+    text: 'At least 200 g/m², or card stock, so the cards are not see-through and survive shuffling.',
+  },
+  {
+    n: '03',
+    title: 'Cut along the cards',
+    text: 'A paper cutter gives the cleanest edges. Then scan any card with the app to check it.',
+  },
+];
+
 const STEPS = [
   {
     n: '01',
@@ -65,6 +83,7 @@ export default function App() {
           <span>Insider Threat</span>
         </a>
         <nav className="topbar__nav">
+          <a href="#cards" className="chip chip--link">Print the cards</a>
           <a href="#download" className="chip chip--link">Get the app</a>
           {LINKS.web && (
             <a href={LINKS.web} className="btn btn--primary btn--sm" target="_blank" rel="noopener noreferrer">
@@ -145,8 +164,44 @@ export default function App() {
             ))}
           </div>
           <p className="downloads__note">
-            You still need the physical cards to play: the app is the Narrator's companion.
+            You still need the physical cards to play: the app is the Narrator's companion.{' '}
+            <a href="#cards">No deck? Print your own.</a>
           </p>
+        </section>
+
+        <section id="cards" className="section">
+          <SectionHead tag="// print & play" title="No deck? Print your own" />
+          <p className="section__text">
+            Every role card on 4 A4 pages: the characters on the front, the QR code the app scans on
+            the back. Print, cut, play.
+          </p>
+          <div className="downloads">
+            <DownloadCard
+              href={LINKS.cards}
+              kicker="PDF · 4 A4 pages"
+              label="Download the cards"
+              hint="About 13 MB. For home or a print shop."
+              icon={<DownloadIcon />}
+              primary
+              file
+            />
+            <DownloadCard
+              href={LINKS.cards}
+              kicker="In your browser"
+              label="Open and print"
+              hint="Opens the PDF in a new tab: then press Print."
+              icon={<PrinterIcon />}
+            />
+          </div>
+          <ol className="steps print-steps">
+            {PRINT_STEPS.map((s) => (
+              <li key={s.n} className="card step">
+                <span className="step__n">{s.n}</span>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+              </li>
+            ))}
+          </ol>
         </section>
       </main>
 
@@ -167,7 +222,7 @@ function SectionHead({ tag, title }) {
   );
 }
 
-function DownloadCard({ href, kicker, label, hint, icon, primary }) {
+function DownloadCard({ href, kicker, label, hint, icon, primary, file }) {
   const ready = Boolean(href);
   const className = `card download${primary ? ' download--primary' : ''}${ready ? '' : ' is-disabled'}`;
   const body = (
@@ -178,8 +233,9 @@ function DownloadCard({ href, kicker, label, hint, icon, primary }) {
       <span className="download__hint">{ready ? hint : 'Coming soon'}</span>
     </>
   );
-  // A file (the APK) downloads in place; a page (web build, store) opens in a new tab.
-  const isFile = ready && /\.apk$/i.test(href);
+  // A file (the APK, or a PDF marked `file`) downloads in place; a page (web build,
+  // store, or a PDF to print) opens in a new tab.
+  const isFile = ready && (file || /\.apk$/i.test(href));
   const linkProps = isFile ? { download: '' } : { target: '_blank', rel: 'noopener noreferrer' };
   return ready ? (
     <a className={className} href={href} {...linkProps}>
@@ -189,6 +245,23 @@ function DownloadCard({ href, kicker, label, hint, icon, primary }) {
     <div className={className} aria-disabled="true">
       {body}
     </div>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14" />
+    </svg>
+  );
+}
+
+function PrinterIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 8V3.5h10V8M7 17H4.5V9.5A1.5 1.5 0 0 1 6 8h12a1.5 1.5 0 0 1 1.5 1.5V17H17" />
+      <path d="M7 14h10v6.5H7z" />
+    </svg>
   );
 }
 
