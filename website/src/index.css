@@ -84,7 +84,6 @@ h3 { font-size: 32px; }
   text-transform: uppercase;
   text-decoration: none;
 }
-.chip--link:hover { background: color-mix(in srgb, var(--secondary) 20%, transparent); }
 
 .tag {
   font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
@@ -112,8 +111,10 @@ h3 { font-size: 32px; }
   font-weight: 700;
   font-size: 16px;
   text-decoration: none;
-  transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+  border: 1px solid transparent;
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s, border-color 0.15s;
 }
+.btn:hover { border-color: var(--primary); }
 .btn--primary {
   background: linear-gradient(135deg, var(--lime-400), var(--lime-500));
   color: var(--on-accent);
@@ -121,17 +122,17 @@ h3 { font-size: 32px; }
 }
 .btn--primary:hover { box-shadow: 0 0 32px 0 color-mix(in srgb, var(--primary) 40%, transparent); transform: translateY(-1px); }
 .btn--ghost {
-  border: 1px solid var(--surface-high);
   color: var(--text);
   background: color-mix(in srgb, var(--bg) 60%, transparent);
 }
-.btn--ghost:hover { border-color: var(--muted); }
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid transparent;
   border-radius: var(--radius);
+  transition: border-color 0.15s, transform 0.15s;
 }
+.card:not(.is-disabled):hover { border-color: var(--primary); }
 
 /* ---------- Top bar ---------- */
 .topbar {
@@ -289,7 +290,8 @@ h3 { font-size: 32px; }
   border-radius: var(--radius);
   overflow: hidden;
   background: radial-gradient(circle at 50% 30%, var(--surface-high), var(--surface));
-  border: 1px solid var(--line);
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
   aspect-ratio: 744 / 1040; /* the printed card ratio */
 }
 .role img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; padding: 12px 8px 36px; }
@@ -311,7 +313,7 @@ h3 { font-size: 32px; }
 }
 .role--red figcaption { color: var(--signal-400); }
 .role--blue figcaption { color: var(--picton-400); }
-.role--red { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--signal-400) 35%, transparent); }
+.role:hover { border-color: var(--primary); }
 
 /* ---------- Downloads ---------- */
 .downloads {
@@ -326,7 +328,6 @@ h3 { font-size: 32px; }
   gap: 4px;
   padding: 28px;
   text-decoration: none;
-  transition: border-color 0.15s, transform 0.15s;
 }
 a.download:hover { border-color: var(--primary); transform: translateY(-2px); }
 .download__icon { width: 32px; height: 32px; margin-bottom: 18px; color: var(--primary); }
@@ -337,7 +338,6 @@ a.download:hover { border-color: var(--primary); transform: translateY(-2px); }
 
 .download--primary {
   background: linear-gradient(135deg, var(--lime-400), var(--lime-500));
-  border-color: transparent;
   color: var(--on-accent);
 }
 .download--primary .download__icon,
@@ -388,7 +388,6 @@ a.download:hover { border-color: var(--primary); transform: translateY(-2px); }
   .hero__scroll { display: none; }
   .hero__cta { width: 100%; }
   .hero__cta .btn { flex: 1; }
-  .topbar .chip--link { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
