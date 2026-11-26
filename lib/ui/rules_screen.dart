@@ -93,17 +93,11 @@ class RulesTabSelect extends StatelessWidget {
         child: Semantics(
           button: true,
           selected: selected,
-          child: Material(
-            color: Colors.transparent,
-            child: Ink(
-              height: 44,
-              decoration: BoxDecoration(
-                gradient: selected ? AppColors.primaryGradient : null,
-                borderRadius: radius,
-              ),
-              child: InkWell(
-                borderRadius: radius,
-                onTap: selected ? null : () => onChanged(tab),
+          child: Pressable(
+            height: 44,
+            gradient: selected ? AppColors.primaryGradient : null,
+            borderRadius: radius,
+            onTap: selected ? null : () => onChanged(tab),
                 child: Center(
                   child: Text(
                     label.toUpperCase(),
@@ -115,8 +109,6 @@ class RulesTabSelect extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-            ),
           ),
         ),
       );

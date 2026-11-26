@@ -66,7 +66,14 @@ flutter:
   assets:
     - assets/sfx/
     - assets/brand/
-    - assets/characters/
+    # Only the images the app uses (defender.png, network_engineer.png and
+    # soc_analyst.png stay in the repo but are not bundled).
+    - assets/characters/incident_responder.png
+    - assets/characters/red_team_card.png
+    - assets/characters/defender_card.png
+    - assets/characters/network_engineer_card.png
+    - assets/characters/soc_analyst_card.png
+    - assets/characters/threat_hunter_card.png
 
   fonts:
     - family: Satoshi

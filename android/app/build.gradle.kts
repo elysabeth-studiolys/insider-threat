@@ -36,6 +36,16 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    packaging {
+        jniLibs {
+            // Compress native .so files inside the APK (default stores them raw).
+            useLegacyPackaging = true
+            // Light APK: arm64 only (modern phones + Apple Silicon emulators).
+            // Plugins like mobile_scanner otherwise ship these ABIs too.
+            excludes += listOf("lib/x86_64/**", "lib/x86/**", "lib/armeabi-v7a/**")
+        }
+    }
 }
 
 kotlin {

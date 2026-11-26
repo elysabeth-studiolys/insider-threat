@@ -158,6 +158,78 @@ class TeamPerson extends StatelessWidget {
 
 enum NeonVariant { primary, red, ghost }
 
+/// Tap target with no ripple: shows a 1px yellow border while pressed,
+/// like the website's hover. [border] is the resting border (null = none).
+class Pressable extends StatefulWidget {
+  const Pressable({
+    super.key,
+    required this.onTap,
+    required this.child,
+    this.color,
+    this.gradient,
+    this.border,
+    this.pressedBorder = AppColors.primary,
+    this.borderRadius,
+    this.shape = BoxShape.rectangle,
+    this.width,
+    this.height,
+  });
+
+  final VoidCallback? onTap;
+  final Widget child;
+  final Color? color;
+  final Gradient? gradient;
+  final Color? border;
+
+  /// Border while pressed. Tiles with a coloured accent pass that accent so
+  /// the press does not flash yellow before the selection colour.
+  final Color pressedBorder;
+  final BorderRadius? borderRadius;
+  final BoxShape shape;
+  final double? width;
+  final double? height;
+
+  @override
+  State<Pressable> createState() => _PressableState();
+}
+
+class _PressableState extends State<Pressable> {
+  bool _pressed = false;
+
+  void _set(bool v) {
+    if (_pressed != v) setState(() => _pressed = v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.onTap != null;
+    final borderColor = enabled && _pressed
+        ? widget.border ?? widget.pressedBorder
+        : widget.border ?? Colors.transparent;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      onTapDown: enabled ? (_) => _set(true) : null,
+      onTapUp: enabled ? (_) => _set(false) : null,
+      onTapCancel: enabled ? () => _set(false) : null,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          color: widget.color,
+          gradient: widget.gradient,
+          shape: widget.shape,
+          borderRadius: widget.shape == BoxShape.circle
+              ? null
+              : widget.borderRadius,
+          border: Border.all(color: borderColor),
+        ),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
 class NeonButton extends StatelessWidget {
   const NeonButton({
     super.key,
@@ -194,33 +266,33 @@ class NeonButton extends StatelessWidget {
         : variant == NeonVariant.ghost
         ? AppColors.text
         : AppColors.onAccent;
+    final Color? borderColor = !enabled
+        ? null
+        : switch (variant) {
+            NeonVariant.primary => AppColors.primary,
+            NeonVariant.red => AppColors.danger,
+            NeonVariant.ghost => null,
+          };
     final radius = BorderRadius.circular(16);
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        height: height,
-        decoration: BoxDecoration(
-          color: bg,
-          gradient: gradient,
-          borderRadius: radius,
-        ),
-        child: InkWell(
-          borderRadius: radius,
-          onTap: onPressed,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                label.toUpperCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppText.body(
-                  fontSize,
-                  weight: FontWeight.w700,
-                  color: fg,
-                  spacing: .9,
-                ),
-              ),
+    return Pressable(
+      onTap: onPressed,
+      height: height,
+      color: bg,
+      gradient: gradient,
+      border: borderColor,
+      borderRadius: radius,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            label.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppText.body(
+              fontSize,
+              weight: FontWeight.w700,
+              color: fg,
+              spacing: .9,
             ),
           ),
         ),
@@ -318,11 +390,7 @@ class _SayCardState extends State<SayCard> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.surfaceHigh, AppColors.surface],
-        ),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.secondary.withValues(alpha: .4)),
       ),
@@ -461,30 +529,13 @@ class _Tile extends StatelessWidget {
       enabled: onTap != null,
       child: Opacity(
         opacity: onTap == null ? .4 : 1,
-        child: Material(
-          color: Colors.transparent,
-          child: Ink(
-            decoration: BoxDecoration(
-              color: selected
-                  ? accent.withValues(alpha: .18)
-                  : AppColors.surface,
-              borderRadius: radius,
-              border: Border.all(color: selected ? accent : AppColors.line),
-              boxShadow: selected
-                  ? [
-                      BoxShadow(
-                        color: accent.withValues(alpha: .28),
-                        blurRadius: 16,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: InkWell(
-              borderRadius: radius,
-              onTap: onTap,
-              child: Padding(padding: padding, child: child),
-            ),
-          ),
+        child: Pressable(
+          onTap: onTap,
+          color: AppColors.surface,
+          border: selected ? accent : null,
+          pressedBorder: accent,
+          borderRadius: radius,
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );
@@ -758,21 +809,16 @@ class _RoundPlayButton extends StatelessWidget {
     return Semantics(
       button: true,
       label: running ? tr('Pause', 'Pause') : tr('Start', 'Démarrer'),
-      child: Material(
+      child: Pressable(
+        onTap: onPressed,
+        shape: BoxShape.circle,
+        width: 60,
+        height: 60,
         color: running ? AppColors.surfaceHigh : AppColors.primary,
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onPressed,
-          child: SizedBox(
-            width: 60,
-            height: 60,
-            child: Icon(
-              running ? Icons.pause_rounded : Icons.play_arrow_rounded,
-              size: 32,
-              color: running ? AppColors.text : AppColors.onAccent,
-            ),
-          ),
+        child: Icon(
+          running ? Icons.pause_rounded : Icons.play_arrow_rounded,
+          size: 32,
+          color: running ? AppColors.text : AppColors.onAccent,
         ),
       ),
     );
@@ -965,7 +1011,7 @@ class SecretCard extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: AppColors.primary.withValues(alpha: .12),
+      color: AppColors.surface,
       borderRadius: BorderRadius.circular(14),
       border: Border.all(color: AppColors.primary.withValues(alpha: .5)),
     ),
@@ -990,7 +1036,7 @@ class BannerCard extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
     decoration: BoxDecoration(
-      color: AppColors.danger.withValues(alpha: .10),
+      color: AppColors.surface,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: AppColors.danger.withValues(alpha: .4)),
     ),

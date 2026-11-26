@@ -36,6 +36,14 @@ class CardCode {
       : '${role.info.name} #${number.toString().padLeft(2, '0')}';
 }
 
+/// Cards printed with another card's QR code: printed code id -> real card.
+const Map<String, CardCode> misprintedCards = {
+  'red:04': CardCode(role: RoleId.defender, number: 2),
+  'defender:02': CardCode(role: RoleId.red, number: 4),
+  'purple:01': CardCode(role: RoleId.networkEngineer, number: 1),
+  'dead_mans_switch:01': CardCode(role: RoleId.threatHunter, number: 1),
+};
+
 /// Returns null for anything that is not an Insider Threat card.
 CardCode? parseCardCode(String? raw) {
   if (raw == null) return null;
@@ -49,5 +57,6 @@ CardCode? parseCardCode(String? raw) {
   }
   final number = int.tryParse(parts[3]);
   if (role == null || number == null || number < 1 || number > 99) return null;
-  return CardCode(role: role, number: number);
+  final card = CardCode(role: role, number: number);
+  return misprintedCards[card.id] ?? card;
 }

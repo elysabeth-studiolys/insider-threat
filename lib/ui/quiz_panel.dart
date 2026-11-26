@@ -100,7 +100,7 @@ class _AnswerRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: right ? AppColors.primary.withValues(alpha: .12) : AppColors.surfaceHigh,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: right ? AppColors.primary : AppColors.line),
         ),
@@ -178,7 +178,6 @@ class _CountPicker extends StatelessWidget {
               _CountChip(
                 n: n,
                 selected: spec.correctCount == n,
-                enough: n >= spec.needed,
                 onTap: () => onCount(n),
               ),
           ],
@@ -202,15 +201,11 @@ class _CountChip extends StatelessWidget {
   const _CountChip({
     required this.n,
     required this.selected,
-    required this.enough,
     required this.onTap,
   });
 
   final int n;
   final bool selected;
-
-  /// This count is "more than half".
-  final bool enough;
   final VoidCallback onTap;
 
   @override
@@ -220,36 +215,21 @@ class _CountChip extends StatelessWidget {
       button: true,
       selected: selected,
       label: tr('$n right answers', '$n bonnes réponses'),
-      child: Material(
-        color: Colors.transparent,
-        child: Ink(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            gradient: selected ? AppColors.primaryGradient : null,
-            color: selected ? null : AppColors.surface,
-            borderRadius: radius,
-            border: Border.all(
-              color: selected
-                  ? AppColors.primary
-                  : enough
-                      ? AppColors.primary.withValues(alpha: .35)
-                      : AppColors.line,
-            ),
-          ),
-          child: InkWell(
-            borderRadius: radius,
-            onTap: onTap,
+      child: Pressable(
+        onTap: onTap,
+        width: 48,
+        height: 48,
+        color: AppColors.surface,
+        border: selected ? AppColors.primary : null,
+        borderRadius: radius,
             child: Center(
               child: ExcludeSemantics(
                 child: Text('$n',
                     style: AppText.mono(17,
                         weight: FontWeight.w700,
-                        color: selected ? AppColors.onAccent : AppColors.text)),
+                        color: selected ? AppColors.primary : AppColors.text)),
               ),
             ),
-          ),
-        ),
       ),
     );
   }

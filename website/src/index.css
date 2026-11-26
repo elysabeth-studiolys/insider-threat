@@ -73,11 +73,7 @@ h3 { font-size: 32px; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border: 1px solid color-mix(in srgb, var(--secondary) 55%, transparent);
-  border-radius: 999px;
   color: var(--secondary);
-  background: color-mix(in srgb, var(--secondary) 10%, transparent);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
