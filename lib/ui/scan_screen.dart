@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../i18n.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +35,7 @@ class _ScanScreenState extends State<ScanScreen> {
   );
 
   late int _player = widget.startAt ?? widget.setup.nextUnassigned ?? 0;
-  String _message = 'Point the camera at the QR code on the card.';
+  String _message = tr('Point the camera at the QR code on the card.', 'Pointez la caméra vers le QR code de la carte.');
   _Tone _tone = _Tone.info;
   int _flash = 0;
 
@@ -68,7 +69,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
     final card = parseCardCode(raw);
     if (card == null) {
-      _say('This QR code is not an Insider Threat card.', _Tone.error);
+      _say(tr('This QR code is not an Insider Threat card.', "Ce QR code n'est pas une carte Insider Threat."), _Tone.error);
       HapticFeedback.heavyImpact();
       return;
     }
@@ -88,17 +89,19 @@ class _ScanScreenState extends State<ScanScreen> {
           if (next != null) _player = next;
         });
       case ScanOutcome.sameCard:
-        _say('$name already has this card.', _Tone.info);
+        _say(tr('$name already has this card.', '$name a déjà cette carte.'), _Tone.info);
       case ScanOutcome.cardUsed:
         HapticFeedback.heavyImpact();
         _say(
-          '${card.label} was already scanned for ${_setup.displayName(result.other!)}.',
+          tr('${card.label} was already scanned for ${_setup.displayName(result.other!)}.',
+              '${card.label} a déjà été scannée pour ${_setup.displayName(result.other!)}.'),
           _Tone.error,
         );
       case ScanOutcome.roleTaken:
         HapticFeedback.heavyImpact();
         _say(
-          '${_setup.displayName(result.other!)} already has the ${card.role.info.name}. Change their role first.',
+          tr('${_setup.displayName(result.other!)} already has the ${card.role.info.name}. Change their role first.',
+              "${_setup.displayName(result.other!)} a déjà la carte ${card.role.info.name}. Changez d'abord son rôle."),
           _Tone.error,
         );
     }
@@ -114,7 +117,7 @@ class _ScanScreenState extends State<ScanScreen> {
 
   void _select(int i) => setState(() {
         _player = i;
-        _message = 'Scan the card of ${_setup.displayName(i)}.';
+        _message = tr('Scan the card of ${_setup.displayName(i)}.', 'Scannez la carte de ${_setup.displayName(i)}.');
         _tone = _Tone.info;
       });
 
@@ -148,11 +151,11 @@ class _ScanScreenState extends State<ScanScreen> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('‹ Setup',
+                      child: Text(tr('‹ Setup', '‹ Préparation'),
                           style: AppText.body(15, color: AppColors.muted)),
                     ),
                     const Spacer(),
-                    TagChip('${_setup.assigned} / ${_setup.count} roles'),
+                    TagChip(tr('${_setup.assigned} / ${_setup.count} roles', '${_setup.assigned} / ${_setup.count} rôles')),
                   ],
                 ),
               ),
@@ -160,7 +163,7 @@ class _ScanScreenState extends State<ScanScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
                   children: [
-                    Lbl('Seat ${_player + 1} · card of'),
+                    Lbl(tr('Seat ${_player + 1} · card of', 'Place ${_player + 1} · carte de')),
                     const SizedBox(height: 4),
                     Text(
                       _setup.displayName(_player).toUpperCase(),
@@ -176,7 +179,7 @@ class _ScanScreenState extends State<ScanScreen> {
                           const SizedBox(width: 8),
                         ],
                         Text(
-                          role == null ? 'No role yet' : 'Now: ${role.info.name}',
+                          role == null ? tr('No role yet', 'Pas encore de rôle') : tr('Now: ${role.info.name}', 'Actuel : ${role.info.name}'),
                           style: AppText.body(15, color: AppColors.textSoft),
                         ),
                       ],
@@ -190,7 +193,7 @@ class _ScanScreenState extends State<ScanScreen> {
                     const SizedBox(height: 12),
                     _Feedback(text: _message, tone: _tone),
                     const SizedBox(height: 16),
-                    const Lbl('Tap a player to scan their card'),
+                    Lbl(tr('Tap a player to scan their card', 'Touchez un joueur pour scanner sa carte')),
                     const SizedBox(height: 10),
                     Wrap(
                       spacing: 8,
@@ -215,7 +218,7 @@ class _ScanScreenState extends State<ScanScreen> {
                   children: [
                     Expanded(
                       child: NeonButton(
-                        label: 'Skip',
+                        label: tr('Skip', 'Passer'),
                         variant: NeonVariant.ghost,
                         onPressed: done ? null : _skip,
                       ),
@@ -224,7 +227,7 @@ class _ScanScreenState extends State<ScanScreen> {
                     Expanded(
                       flex: 2,
                       child: NeonButton(
-                        label: done ? 'All cards scanned' : 'Done',
+                        label: done ? tr('All cards scanned', 'Toutes les cartes scannées') : tr('Done', 'Terminé'),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
@@ -329,10 +332,13 @@ class _CameraError extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = switch (error.errorCode) {
       MobileScannerErrorCode.permissionDenied =>
-        'Camera access is off. Allow it in the phone settings, or pick roles by hand in the setup.',
+        tr('Camera access is off. Allow it in the phone settings, or pick roles by hand in the setup.',
+            "L'accès à la caméra est désactivé. Autorisez-le dans les réglages du téléphone, ou choisissez les rôles à la main."),
       MobileScannerErrorCode.unsupported =>
-        'No camera available on this device. Pick roles by hand in the setup.',
-      _ => 'The camera could not start. Pick roles by hand in the setup.',
+        tr('No camera available on this device. Pick roles by hand in the setup.',
+            "Aucune caméra sur cet appareil. Choisissez les rôles à la main dans la préparation."),
+      _ => tr('The camera could not start. Pick roles by hand in the setup.',
+          "La caméra n'a pas pu démarrer. Choisissez les rôles à la main dans la préparation."),
     };
     return Center(
       child: Padding(
@@ -407,7 +413,7 @@ class _SeatChip extends StatelessWidget {
     return Semantics(
       button: true,
       selected: current,
-      label: '$name, ${role == null ? 'no role' : role!.info.name}',
+      label: '$name, ${role == null ? tr('no role', 'pas de rôle') : role!.info.name}',
       child: Material(
         color: Colors.transparent,
         child: Ink(

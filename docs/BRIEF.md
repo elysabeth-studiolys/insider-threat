@@ -79,6 +79,13 @@ Le déroulé est repris de `/Users/elysabeth/Downloads/flutter_event_draw/` : al
 - **Setup :** le bouton « Reset players » vide les noms et les rôles. Taper ailleurs ou faire défiler la liste ferme le clavier.
 - **Art :** la face personnage de la Red Team est la carte finie de l'équipe (`assets/characters/red_team_card.jpg`, déclarée dans `roleCardArt`). Le badge d'équipe remplace le surnom sur les cartes de rôle.
 
+## Langue (anglais / français)
+- **Réglage** : Paramètres → Langue (English / Français). Il est enregistré, et par défaut c'est la langue du téléphone.
+- **Changement à chaud** : on peut changer avant, pendant ou après une partie. `LanguageScope` (dans `lib/i18n.dart`) reconstruit tout l'écran sans perdre la partie, et les textes du script sont recalculés à chaque affichage.
+- **Pour ajouter un texte** : `tr('English', 'Français')`. Les données (rôles, Events, quiz, e-mails de phishing) sont des getters et pas des `const`, pour suivre la langue.
+- **Restent en anglais dans les deux langues** : les noms des rôles et des Events (ce sont ceux des cartes imprimées), « Red/Blue/Purple Team », et les lignes « terminal » de l'écran de fin.
+- **CISO** devient **RSSI** en français.
+
 ## Reste à faire ensuite
 - **Mode Expert plus visible :** choix Base / Expert, et badge pendant la partie.
 - **Ambiance sonore et sons des étapes :** actuellement « Audio coming soon ».

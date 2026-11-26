@@ -3,6 +3,7 @@
 library;
 
 import 'dart:async';
+import '../../i18n.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -249,7 +250,8 @@ class _EventDrawPanelState extends State<EventDrawPanel>
     final accent = side.color;
 
     return Semantics(
-      label: 'Event of the day: ${widget.card.info.title}. ${widget.card.face.effect.replaceAll('**', '')}',
+      label: tr('Event of the day: ', 'Événement du jour : ') +
+          '${widget.card.info.title}. ${widget.card.face.effect.replaceAll('**', '')}',
       child: LayoutBuilder(builder: (context, box) {
         final w = min(box.maxWidth * 0.78, 300.0);
         final h = w / kCardRatio;
@@ -266,7 +268,7 @@ class _EventDrawPanelState extends State<EventDrawPanel>
                         ? 0
                         : _alertOpacity.transform(_alert.value),
                     child: Text(
-                      '⚠ INCOMING EVENT',
+                      tr('⚠ INCOMING EVENT', '⚠ ÉVÉNEMENT ENTRANT'),
                       style: cardMono(size: 13, color: accent, spacing: 4.5)
                           .copyWith(shadows: [Shadow(color: accent, blurRadius: 12)]),
                     ),
@@ -316,7 +318,7 @@ class _EventDrawPanelState extends State<EventDrawPanel>
                   child: TextButton.icon(
                     onPressed: _shown && !_busy ? _play : null,
                     icon: const Icon(Icons.replay, size: 16, color: AppColors.muted),
-                    label: Text('Replay the draw',
+                    label: Text(tr('Replay the draw', 'Rejouer le tirage'),
                         style: AppText.body(13, color: AppColors.muted)),
                   ),
                 ),

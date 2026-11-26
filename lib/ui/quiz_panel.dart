@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../i18n.dart';
 
 import '../game/events.dart';
 import '../game/guide_step.dart';
@@ -32,7 +33,7 @@ class QuizPanel extends StatelessWidget {
                 _EmailCard(email: spec.email!),
                 const SizedBox(height: 14),
               ],
-              const Lbl('Question', color: AppColors.primarySoft),
+              Lbl(tr('Question', 'Question'), color: AppColors.primarySoft),
               const SizedBox(height: 6),
               Text(spec.question,
                   style: AppText.body(18, weight: FontWeight.w700, height: 1.35)),
@@ -64,7 +65,7 @@ class QuizPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Lbl('Why', color: AppColors.primarySoft),
+                Lbl(tr('Why', 'Pourquoi'), color: AppColors.primarySoft),
                 const SizedBox(height: 4),
                 Text(spec.explanation,
                     style: AppText.body(15,
@@ -152,17 +153,22 @@ class _CountPicker extends StatelessWidget {
             ? spec.majorityRight
             : spec.majorityWrong;
     final verdict = happens == null
-        ? 'More than half = at least ${spec.needed} of ${spec.alive}.'
+        ? tr('More than half = at least ${spec.needed} of ${spec.alive}.',
+            'Plus de la moitié = au moins ${spec.needed} sur ${spec.alive}.')
         : custom ?? switch (spec.side) {
-            EventSide.chaos => 'Chaos Event: it happens whatever the answers.',
+            EventSide.chaos => tr('Chaos Event: it happens whatever the answers.',
+                "Event Chaos : il a lieu quelles que soient les réponses."),
             _ => spec.majority!
-                ? 'More than half were right: the Event ${happens ? 'happens' : 'is blocked'}.'
-                : 'Not enough right answers: the Event ${happens ? 'happens' : 'is blocked'}.',
+                ? tr("More than half were right: the Event ${happens ? 'happens' : 'is blocked'}.",
+                    "Plus de la moitié ont eu juste : l'Event ${happens ? 'a lieu' : 'est bloqué'}.")
+                : tr("Not enough right answers: the Event ${happens ? 'happens' : 'is blocked'}.",
+                    "Pas assez de bonnes réponses : l'Event ${happens ? 'a lieu' : 'est bloqué'}."),
           };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Lbl('Players who found the right answer (out of ${spec.alive})'),
+        Lbl(tr('Players who found the right answer (out of ${spec.alive})',
+            'Joueurs qui ont trouvé la bonne réponse (sur ${spec.alive})')),
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
@@ -213,7 +219,7 @@ class _CountChip extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: '$n right answers',
+      label: tr('$n right answers', '$n bonnes réponses'),
       child: Material(
         color: Colors.transparent,
         child: Ink(
@@ -273,17 +279,17 @@ class _EmailCard extends StatelessWidget {
             children: [
               const Icon(Icons.mail_outline_rounded, size: 18, color: AppColors.textSoft),
               const SizedBox(width: 8),
-              Expanded(child: Text('Inbox', style: AppText.body(13, weight: FontWeight.w700))),
+              Expanded(child: Text(tr('Inbox', 'Boîte de réception'), style: AppText.body(13, weight: FontWeight.w700))),
             ],
           ),
           const SizedBox(height: 10),
           Text.rich(TextSpan(children: [
-            TextSpan(text: 'From  ', style: meta(AppColors.muted)),
+            TextSpan(text: tr('From  ', 'De  '), style: meta(AppColors.muted)),
             TextSpan(text: email.from, style: meta(AppColors.text)),
           ])),
           const SizedBox(height: 2),
           Text.rich(TextSpan(children: [
-            TextSpan(text: 'Subject  ', style: meta(AppColors.muted)),
+            TextSpan(text: tr('Subject  ', 'Objet  '), style: meta(AppColors.muted)),
             TextSpan(
                 text: email.subject,
                 style: AppText.body(13, weight: FontWeight.w700, height: 1.4)),

@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'events.dart';
 import 'guide_step.dart';
 import 'models.dart';
+import '../i18n.dart';
 
 part 'day_script.dart';
 part 'night_script.dart';
@@ -33,6 +34,9 @@ enum DayStage {
 
 /// What the quiz decided for today's Event.
 enum EventOutcome { pending, happens, blocked }
+
+/// Extra facts announced in the morning report.
+enum MorningNote { honeypot, phishSpotted }
 
 class GameController extends ChangeNotifier {
   GameController({
@@ -99,7 +103,9 @@ class GameController extends ChangeNotifier {
   /// Set by tests that force an Event: no quiz steps for that day.
   bool _quizSkipped = false;
   List<int> morningIds = [];
-  List<String> morningNotes = [];
+  /// Extra lines of the morning report, turned into text when shown (so they
+  /// follow the language even if it changes mid-game).
+  List<MorningNote> morningNotes = [];
   List<int> verdictIds = [];
   List<int> noticeIds = [];
   Set<int> voteBanned = {};
@@ -362,7 +368,7 @@ class GameController extends ChangeNotifier {
     final ev = nightEvent;
     final outage = ev == EventCard.powerOutage;
     final deaths = <int>[];
-    final notes = <String>[];
+    final notes = <MorningNote>[];
 
     // The Incident Responder's tools only count when they could really be used.
     final ir = holder(RoleId.incidentResponder);
@@ -379,7 +385,7 @@ class GameController extends ChangeNotifier {
     if (useRestore) restoreUsed = true;
     if (victim != null && !useRestore) deaths.add(victim);
     if (honeypotTriggered) {
-      notes.add('Honeypot triggered: an attack was detected and blocked.');
+      notes.add(MorningNote.honeypot);
     }
 
     if (useKill) {
@@ -400,7 +406,7 @@ class GameController extends ChangeNotifier {
       if (second != null) deaths.add(second);
     }
     if (ev == EventCard.phishing && phishSpotted) {
-      notes.add('The phishing campaign was spotted: the Red Team\'s attack failed.');
+      notes.add(MorningNote.phishSpotted);
     }
 
     morningIds = _eliminate(deaths);
@@ -671,7 +677,7 @@ class GameController extends ChangeNotifier {
 
   String _join(List<String> names) {
     if (names.length <= 1) return names.join();
-    return '${names.sublist(0, names.length - 1).join(', ')} and ${names.last}';
+    return '${names.sublist(0, names.length - 1).join(', ')}${tr(' and ', ' et ')}${names.last}';
   }
 
   List<TileSpec> _tiles({

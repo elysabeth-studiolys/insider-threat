@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'card_code.dart';
 import 'compositions.dart';
 import 'models.dart';
+import '../i18n.dart';
 
 export 'card_code.dart' show CardCode;
 
@@ -51,7 +52,7 @@ class SetupController extends ChangeNotifier {
   Composition get recommended => recommendedComposition(count);
 
   String displayName(int i) =>
-      names[i].trim().isEmpty ? 'Player ${i + 1}' : names[i].trim();
+      names[i].trim().isEmpty ? tr('Player ${i + 1}', 'Joueur ${i + 1}') : names[i].trim();
 
   /// First player, in seating order, who has no role yet.
   int? get nextUnassigned {
@@ -135,12 +136,13 @@ class SetupController extends ChangeNotifier {
   String? get blocker {
     if (assigned < count) {
       final left = count - assigned;
-      return 'Assign $left more ${left == 1 ? 'role' : 'roles'}';
+      return tr("Assign $left more ${left == 1 ? 'role' : 'roles'}",
+          "Encore $left ${left == 1 ? 'rôle' : 'rôles'} à attribuer");
     }
-    if (countTeam(Team.red) < 1) return 'Add a Red Team card';
-    if (countTeam(Team.blue) < 1) return 'Add a Blue Team card';
+    if (countTeam(Team.red) < 1) return tr('Add a Red Team card', 'Ajoutez une carte Red Team');
+    if (countTeam(Team.blue) < 1) return tr('Add a Blue Team card', 'Ajoutez une carte Blue Team');
     if (count < purpleMinPlayers && countTeam(Team.purple) > 0) {
-      return 'Purple Team needs $purpleMinPlayers players';
+      return tr('Purple Team needs $purpleMinPlayers players', 'La Purple Team demande $purpleMinPlayers joueurs');
     }
     return null;
   }
@@ -183,7 +185,7 @@ class SetupController extends ChangeNotifier {
         for (var i = 0; i < count; i++)
           Player(
             id: i,
-            name: names[i].trim().isEmpty ? 'Player ${i + 1}' : names[i].trim(),
+            name: names[i].trim().isEmpty ? tr('Player ${i + 1}', 'Joueur ${i + 1}') : names[i].trim(),
             role: roles[i]!,
           ),
       ];

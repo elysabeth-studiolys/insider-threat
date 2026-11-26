@@ -1,7 +1,7 @@
 part of 'game_controller.dart';
 
-const _waitLine =
-    'Nobody can use this power. Read the line anyway and wait a few seconds.';
+String get _waitLine => tr('Nobody can use this power. Read the line anyway and wait a few seconds.',
+    'Personne ne peut utiliser ce pouvoir. Lisez quand même la phrase et attendez quelques secondes.');
 
 /// Attackers still online: Red Team and the Purple double agent.
 List<Player> _attackersOf(GameController c) =>
@@ -58,17 +58,29 @@ GuideStep _buildNight(GameController c) {
       final hp = c.honeypotId;
       return GuideStep(
         kind: kind,
-        kicker: 'Everyone',
-        title: 'Nightfall',
-        tag: ev == null ? null : 'Event: ${ev.info.title}',
-        say: 'Night falls on CORP-LAN. All employees, log off and close your eyes.'
-            '${ev == EventCard.powerOutage ? ' Power outage: all special powers are offline tonight.' : ''}'
-            '${ev == EventCard.phishing ? (c.phishSpotted ? ' The phishing campaign was spotted: the Red Team will not attack tonight.' : ' The phishing campaign worked: tonight the Red Team strikes twice.') : ''}',
-        todo:
+        kicker: tr('Everyone', 'Tout le monde'),
+        title: tr('Nightfall', 'La nuit tombe'),
+        tag: ev == null ? null : tr('Event: ${ev.info.title}', 'Événement : ${ev.info.title}'),
+        say: tr('Night falls on CORP-LAN. All employees, log off and close your eyes.',
+                'La nuit tombe sur CORP-LAN. Tous les employés, déconnectez-vous et fermez les yeux.') +
+            (ev == EventCard.powerOutage
+                ? tr(' Power outage: all special powers are offline tonight.',
+                    ' Coupure de courant : tous les pouvoirs spéciaux sont hors ligne cette nuit.')
+                : '') +
+            (ev == EventCard.phishing
+                ? (c.phishSpotted
+                    ? tr(' The phishing campaign was spotted: the Red Team will not attack tonight.',
+                        " La campagne de phishing a été repérée : la Red Team n'attaquera pas cette nuit.")
+                    : tr(' The phishing campaign worked: tonight the Red Team strikes twice.',
+                        ' La campagne de phishing a marché : cette nuit, la Red Team frappe deux fois.'))
+                : ''),
+        todo: tr(
             'The night ambience starts by itself. Wait until the table is silent. Players never speak at night: they point.',
+            "L'ambiance de nuit démarre toute seule. Attendez que la table soit silencieuse. La nuit, les joueurs ne parlent jamais : ils désignent du doigt."),
         secret: hp == null
             ? null
-            : 'Honeypot decoy: ${c.players[hp].name}. If the Red Team targets this machine tonight, the attack fails. Tell nobody.',
+            : tr('Honeypot decoy: ${c.players[hp].name}. If the Red Team targets this machine tonight, the attack fails. Tell nobody.',
+                'Leurre du Honeypot : ${c.players[hp].name}. Si la Red Team vise cette machine cette nuit, l\'attaque échoue. Ne le dites à personne.'),
         stepNo: stepNo,
         total: total,
         canBack: canBack,
@@ -79,20 +91,22 @@ GuideStep _buildNight(GameController c) {
       final out = gone(ne);
       return GuideStep(
         kind: kind,
-        kicker: out ? 'Read it anyway' : ne!.name,
+        kicker: out ? tr('Read it anyway', 'Lisez quand même') : ne!.name,
         title: 'Network Engineer',
         team: Team.blue,
-        tag: out ? 'Eliminated' : null,
-        say:
+        tag: out ? tr('Eliminated', 'Éliminé') : null,
+        say: tr(
             'Network Engineer, wake up. Point at two machines to link with a VPN tunnel. Network Engineer, go back to sleep.',
+            'Network Engineer, réveille-toi. Désigne deux machines à relier par un tunnel VPN. Network Engineer, rendors-toi.'),
         todo: out
             ? _waitLine
-            : '${ne!.name} points at two machines (they may include themselves). Tap both.',
+            : tr('${ne!.name} points at two machines (they may include themselves). Tap both.',
+                '${ne!.name} désigne deux machines (il peut se choisir lui-même). Touchez les deux.'),
         selKey: 'link',
         picker: out
             ? null
             : PickerSpec(
-                label: 'Pick two machines (${c.link.length}/2)',
+                label: tr('Pick two machines (${c.link.length}/2)', 'Choisissez deux machines (${c.link.length}/2)'),
                 tiles: c._tiles(selected: c.link.toSet()),
                 style: PickStyle.violet,
                 max: 2,
@@ -109,14 +123,17 @@ GuideStep _buildNight(GameController c) {
       final b = linked ? c.players[c.link[1]] : null;
       return GuideStep(
         kind: kind,
-        kicker: linked ? '${a!.name} and ${b!.name}' : 'Nobody linked',
-        title: 'Linked machines',
+        kicker: linked ? tr('${a!.name} and ${b!.name}', '${a!.name} et ${b!.name}') : tr('Nobody linked', 'Personne de relié'),
+        title: tr('Linked machines', 'Machines reliées'),
         team: Team.purple,
-        say:
+        say: tr(
             'I will tap the two linked machines. Linked machines, open your eyes and recognise each other. If one of you goes down, the other goes down too. Close your eyes.',
+            "Je vais toucher les deux machines reliées. Machines reliées, ouvrez les yeux et reconnaissez-vous. Si l'une de vous tombe, l'autre tombe aussi. Fermez les yeux."),
         todo: linked
-            ? 'Tap ${a!.name} and ${b!.name} on the shoulder. Let them see each other, then ask them to close their eyes.'
-            : 'Nobody is linked. Read the line anyway and wait a few seconds.',
+            ? tr('Tap ${a!.name} and ${b!.name} on the shoulder. Let them see each other, then ask them to close their eyes.',
+                "Touchez l'épaule de ${a!.name} et de ${b!.name}. Laissez-les se voir, puis demandez-leur de fermer les yeux.")
+            : tr('Nobody is linked. Read the line anyway and wait a few seconds.',
+                "Personne n'est relié. Lisez quand même la phrase et attendez quelques secondes."),
         stepNo: stepNo,
         total: total,
         canBack: canBack,
@@ -129,23 +146,29 @@ GuideStep _buildNight(GameController c) {
       final picks = c.sel('hunter');
       return GuideStep(
         kind: kind,
-        kicker: out ? 'Read it anyway' : th!.name,
+        kicker: out ? tr('Read it anyway', 'Lisez quand même') : th!.name,
         title: 'Threat Hunter',
         team: Team.blue,
-        tag: out ? 'Eliminated' : null,
+        tag: out ? tr('Eliminated', 'Éliminé') : null,
         say: need == 2
-            ? 'Threat Hunter, wake up. Tonight, you may inspect two machines. Point at the machines you want to inspect. Threat Hunter, go back to sleep.'
-            : 'Threat Hunter, wake up. Point at the machine you want to inspect. Threat Hunter, go back to sleep.',
+            ? tr('Threat Hunter, wake up. Tonight, you may inspect two machines. Point at the machines you want to inspect. Threat Hunter, go back to sleep.',
+                'Threat Hunter, réveille-toi. Cette nuit, tu peux inspecter deux machines. Désigne les machines que tu veux inspecter. Threat Hunter, rendors-toi.')
+            : tr('Threat Hunter, wake up. Point at the machine you want to inspect. Threat Hunter, go back to sleep.',
+                'Threat Hunter, réveille-toi. Désigne la machine que tu veux inspecter. Threat Hunter, rendors-toi.'),
         todo: out
             ? _waitLine
             : need == 2
-                ? '${th!.name} points at two players. Tap both: the cards appear on screen. Silently turn the phone towards ${th.name}, one card after the other.'
-                : '${th!.name} points at a player. Tap that player: the card appears on screen. Silently turn the phone towards ${th.name}.',
+                ? tr('${th!.name} points at two players. Tap both: the cards appear on screen. Silently turn the phone towards ${th.name}, one card after the other.',
+                    "${th!.name} désigne deux joueurs. Touchez-les : les cartes s'affichent. Tournez le téléphone vers ${th.name} en silence, une carte après l'autre.")
+                : tr('${th!.name} points at a player. Tap that player: the card appears on screen. Silently turn the phone towards ${th.name}.',
+                    "${th!.name} désigne un joueur. Touchez ce joueur : sa carte s'affiche. Tournez le téléphone vers ${th.name} en silence."),
         selKey: 'hunter',
         picker: out
             ? null
             : PickerSpec(
-                label: need == 2 ? 'Which machines? (${picks.length}/2)' : 'Which machine?',
+                label: need == 2
+                    ? tr('Which machines? (${picks.length}/2)', 'Quelles machines ? (${picks.length}/2)')
+                    : tr('Which machine?', 'Quelle machine ?'),
                 tiles: c._tiles(
                   selected: picks.toSet(),
                   lock: (p) => p.id == th!.id,
@@ -159,8 +182,9 @@ GuideStep _buildNight(GameController c) {
                 for (final id in picks)
                   ResultLine(
                     team: c.players[id].team,
-                    text:
+                    text: tr(
                         'Show ${th!.name} the role card of ${c.players[id].name}: ${c.players[id].role.info.name} (${c.players[id].role.info.character})',
+                        'Montrez à ${th!.name} la carte de ${c.players[id].name} : ${c.players[id].role.info.name} (${c.players[id].role.info.character})'),
                   ),
               ],
         reveal: out || picks.length < need
@@ -188,14 +212,22 @@ GuideStep _buildNight(GameController c) {
         title: 'Red Team',
         team: Team.red,
         say: twice
-            ? 'Red Team, wake up. Look at each other. With the stolen credentials, silently choose two machines to compromise. Red Team, go back to sleep.'
-            : 'Red Team, wake up. Look at each other. Silently choose one machine to compromise. Red Team, go back to sleep.',
+            ? tr('Red Team, wake up. Look at each other. With the stolen credentials, silently choose two machines to compromise. Red Team, go back to sleep.',
+                'Red Team, réveillez-vous. Regardez-vous. Avec les identifiants volés, choisissez en silence deux machines à compromettre. Red Team, rendormez-vous.')
+            : tr('Red Team, wake up. Look at each other. Silently choose one machine to compromise. Red Team, go back to sleep.',
+                'Red Team, réveillez-vous. Regardez-vous. Choisissez en silence une machine à compromettre. Red Team, rendormez-vous.'),
         todo: twice
-            ? 'They point at two players and you nod to confirm. Tap both. The first one is tonight\'s victim for the Incident Responder; the second cannot be restored. The SOC Analyst may peek.'
-            : 'They point at a player and you nod to confirm. Tap the victim. ${ev == EventCard.powerOutage ? 'Power outage: the SOC Analyst cannot peek.' : 'The SOC Analyst may peek.'}',
+            ? tr("They point at two players and you nod to confirm. Tap both. The first one is tonight's victim for the Incident Responder; the second cannot be restored. The SOC Analyst may peek.",
+                "Ils désignent deux joueurs et vous hochez la tête pour confirmer. Touchez-les. Le premier est la victime de la nuit pour l'Incident Responder ; le second ne peut pas être restauré. La SOC Analyst peut espionner.")
+            : tr('They point at a player and you nod to confirm. Tap the victim. ', 'Ils désignent un joueur et vous hochez la tête pour confirmer. Touchez la victime. ') +
+                (ev == EventCard.powerOutage
+                    ? tr('Power outage: the SOC Analyst cannot peek.', 'Coupure de courant : la SOC Analyst ne peut pas espionner.')
+                    : tr('The SOC Analyst may peek.', 'La SOC Analyst peut espionner.')),
         selKey: 'red',
         picker: PickerSpec(
-          label: twice ? 'Tap the two victims (${c.sel('red').length}/2)' : 'Tap the victim',
+          label: twice
+              ? tr("Tap the two victims (${c.sel('red').length}/2)", "Touchez les deux victimes (${c.sel('red').length}/2)")
+              : tr('Tap the victim', 'Touchez la victime'),
           tiles: c._tiles(
             selected: c.sel('red').toSet(),
             lock: (p) => p.team != Team.blue,
@@ -219,23 +251,28 @@ GuideStep _buildNight(GameController c) {
       if (isLast && attackers.every((a) => c.sel('red:${a.id}').isNotEmpty)) {
         final t = c.rawTarget;
         outcome = t == null
-            ? 'No agreement: the attack fails. Tonight is a quiet night.'
-            : 'The attackers agree on ${c.players[t].name}.';
+            ? tr('No agreement: the attack fails. Tonight is a quiet night.',
+                "Pas d'accord : l'attaque échoue. La nuit est calme.")
+            : tr('The attackers agree on ${c.players[t].name}.', "Les attaquants s'accordent sur ${c.players[t].name}.");
       }
       return GuideStep(
         kind: kind,
-        kicker: 'C2 server down · attacker ${idx + 1} of ${attackers.length}',
+        kicker: tr('C2 server down · attacker ${idx + 1} of ${attackers.length}',
+            'Serveur C2 tombé · attaquant ${idx + 1} sur ${attackers.length}'),
         title: p.name,
         team: p.team,
         sub: p.role.info.name,
         say: idx == 0
-            ? 'The attackers\' C2 server is down. The attacker I tap, open your eyes and point at your target. Close your eyes.'
-            : 'Next attacker, open your eyes and point at your target. Close your eyes.',
-        todo:
+            ? tr("The attackers' C2 server is down. The attacker I tap, open your eyes and point at your target. Close your eyes.",
+                "Le serveur C2 des attaquants est tombé. L'attaquant que je touche, ouvre les yeux et désigne ta cible. Ferme les yeux.")
+            : tr('Next attacker, open your eyes and point at your target. Close your eyes.',
+                'Attaquant suivant, ouvre les yeux et désigne ta cible. Ferme les yeux.'),
+        todo: tr(
             'Tap ${p.name} on the shoulder. They point at a target, then close their eyes without seeing the others. Tap their choice.',
+            "Touchez l'épaule de ${p.name}. Il désigne une cible, puis ferme les yeux sans voir les autres. Touchez son choix."),
         selKey: key,
         picker: PickerSpec(
-          label: 'Target of ${p.name}',
+          label: tr('Target of ${p.name}', 'Cible de ${p.name}'),
           tiles: c._tiles(
             selected: c.sel(key).toSet(),
             lock: (q) => q.team != Team.blue,
@@ -256,26 +293,27 @@ GuideStep _buildNight(GameController c) {
       final out = gone(pu);
       return GuideStep(
         kind: kind,
-        kicker: out ? 'Read it anyway' : pu!.name,
+        kicker: out ? tr('Read it anyway', 'Lisez quand même') : pu!.name,
         title: 'Purple Team',
         team: Team.purple,
-        tag: out ? 'Eliminated' : null,
-        say:
-            'Purple Team, wake up. You may take down one member of the Red Team. Go back to sleep.',
+        tag: out ? tr('Eliminated', 'Éliminé') : null,
+        say: tr('Purple Team, wake up. You may take down one member of the Red Team. Go back to sleep.',
+            'Purple Team, réveille-toi. Tu peux éliminer un membre de la Red Team. Rendors-toi.'),
         todo: out
             ? _waitLine
-            : '${pu!.name} points at a Red Team member, or at nobody. Tap their choice.',
+            : tr('${pu!.name} points at a Red Team member, or at nobody. Tap their choice.',
+                '${pu!.name} désigne un membre de la Red Team, ou personne. Touchez son choix.'),
         selKey: 'purple',
         picker: out
             ? null
             : PickerSpec(
-                label: 'Eliminate which Red Team member?',
+                label: tr('Eliminate which Red Team member?', 'Éliminer quel membre de la Red Team ?'),
                 tiles: c._tiles(
                   selected: c.sel('purple').toSet(),
                   lock: (p) => p.role != RoleId.red,
                 ),
                 style: PickStyle.red,
-                noneLabel: 'Nobody',
+                noneLabel: tr('Nobody', 'Personne'),
                 noneSelected: c.hasNone('purple'),
               ),
         canContinue: out || c.sel('purple').isNotEmpty || c.hasNone('purple'),
@@ -295,27 +333,31 @@ GuideStep _buildNight(GameController c) {
       final killOk = !c.killUsed;
       final String say;
       if (target == null) {
-        say =
-            'Incident Responder, wake up. Nobody was compromised tonight. Do you want to kill a process?';
+        say = tr('Incident Responder, wake up. Nobody was compromised tonight. Do you want to kill a process?',
+            "Incident Responder, réveille-toi. Personne n'a été compromis cette nuit. Veux-tu tuer un processus ?");
       } else if (zero) {
-        say =
-            'Incident Responder, wake up. Tonight, this machine was compromised. Backup Restore is unavailable tonight. Do you want to kill a process?';
+        say = tr(
+            'Incident Responder, wake up. Tonight, this machine was compromised. Backup Restore is unavailable tonight. Do you want to kill a process?',
+            'Incident Responder, réveille-toi. Cette nuit, cette machine a été compromise. Backup Restore est indisponible cette nuit. Veux-tu tuer un processus ?');
       } else {
-        say =
-            'Incident Responder, wake up. Tonight, this machine was compromised. Do you want to restore a backup? Do you want to kill a process?';
+        say = tr(
+            'Incident Responder, wake up. Tonight, this machine was compromised. Do you want to restore a backup? Do you want to kill a process?',
+            'Incident Responder, réveille-toi. Cette nuit, cette machine a été compromise. Veux-tu restaurer une sauvegarde ? Veux-tu tuer un processus ?');
       }
       return GuideStep(
         kind: kind,
-        kicker: out ? 'Read it anyway' : ir!.name,
+        kicker: out ? tr('Read it anyway', 'Lisez quand même') : ir!.name,
         title: 'Incident Responder',
         team: Team.blue,
-        tag: out ? 'Eliminated' : null,
+        tag: out ? tr('Eliminated', 'Éliminé') : null,
         say: say,
         todo: out
             ? _waitLine
             : target == null
-                ? 'Nobody was targeted tonight. ${ir!.name} may still use Kill Process by pointing at a player. Tap the tool used.'
-                : 'Silently point at $tName. ${ir!.name} answers with a thumb for Backup Restore, or points at a player for Kill Process. Tap the tools used.',
+                ? tr('Nobody was targeted tonight. ${ir!.name} may still use Kill Process by pointing at a player. Tap the tool used.',
+                    "Personne n'a été visé cette nuit. ${ir!.name} peut quand même utiliser Kill Process en désignant un joueur. Touchez l'outil utilisé.")
+                : tr('Silently point at $tName. ${ir!.name} answers with a thumb for Backup Restore, or points at a player for Kill Process. Tap the tools used.',
+                    'Désignez $tName en silence. ${ir!.name} répond avec le pouce pour Backup Restore, ou désigne un joueur pour Kill Process. Touchez les outils utilisés.'),
         tools: out
             ? null
             : ToolsSpec(
@@ -324,18 +366,18 @@ GuideStep _buildNight(GameController c) {
                 restoreEnabled: restoreOk,
                 killEnabled: killOk,
                 restoreSub: c.restoreUsed
-                    ? 'Already used'
+                    ? tr('Already used', 'Déjà utilisé')
                     : zero
-                        ? 'Offline tonight'
+                        ? tr('Offline tonight', 'Hors ligne cette nuit')
                         : target == null
-                            ? 'Nothing to save'
-                            : 'Save $tName',
-                killSub: c.killUsed ? 'Already used' : 'Take down any machine',
+                            ? tr('Nothing to save', 'Rien à sauver')
+                            : tr('Save $tName', 'Sauver $tName'),
+                killSub: c.killUsed ? tr('Already used', 'Déjà utilisé') : tr('Take down any machine', "Éliminer n'importe quelle machine"),
               ),
         selKey: 'kill',
         picker: (!out && c.kill && killOk)
             ? PickerSpec(
-                label: 'Kill which machine?',
+                label: tr('Kill which machine?', 'Éliminer quelle machine ?'),
                 tiles: c._tiles(selected: c.sel('kill').toSet()),
                 style: PickStyle.red,
               )
@@ -349,11 +391,12 @@ GuideStep _buildNight(GameController c) {
     case StepKind.dawn:
       return GuideStep(
         kind: kind,
-        kicker: 'Everyone',
-        title: 'Dawn',
-        say: 'The night is over. Everyone, open your eyes.',
-        todo: 'The night ambience fades out by itself. Move on to the morning report.',
-        primaryLabel: 'Morning report',
+        kicker: tr('Everyone', 'Tout le monde'),
+        title: tr('Dawn', "L'aube"),
+        say: tr('The night is over. Everyone, open your eyes.', 'La nuit est terminée. Tout le monde, ouvrez les yeux.'),
+        todo: tr('The night ambience fades out by itself. Move on to the morning report.',
+            "L'ambiance de nuit s'estompe toute seule. Passez au rapport du matin."),
+        primaryLabel: tr('Morning report', 'Rapport du matin'),
         stepNo: stepNo,
         total: total,
         canBack: canBack,

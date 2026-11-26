@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../i18n.dart';
 
 import '../app_settings.dart';
 import '../game/game_controller.dart';
@@ -22,7 +23,7 @@ class GuideScreen extends StatelessWidget {
     final step = game.currentStep;
     final isNight = game.phase == GamePhase.night;
     final phaseLabel =
-        '${isNight ? 'Night' : 'Day'} ${game.night.toString().padLeft(2, '0')}';
+        '${isNight ? tr('Night', 'Nuit') : tr('Day', 'Jour')} ${game.night.toString().padLeft(2, '0')}';
     final pageKey =
         '${game.phase.name}-${game.night}-${step.kind.name}-${step.stepNo}-${step.title}';
 
@@ -34,13 +35,13 @@ class GuideScreen extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Lbl(
-              step.progressLabel ?? 'Step ${step.stepNo} / ${step.total}',
+              step.progressLabel ?? tr('Step ${step.stepNo} / ${step.total}', 'Étape ${step.stepNo} / ${step.total}'),
               align: TextAlign.right,
             ),
           ),
           const SettingsButton(),
           IconButton(
-            tooltip: 'Quit the game',
+            tooltip: tr('Quit the game', 'Quitter la partie'),
             onPressed: onQuit,
             icon: const Icon(Icons.close, color: AppColors.muted),
           ),
@@ -61,12 +62,12 @@ class GuideScreen extends StatelessWidget {
       ),
     );
     final back = NeonButton(
-      label: 'Back',
+      label: tr('Back', 'Retour'),
       variant: NeonVariant.ghost,
       onPressed: step.canBack ? game.back : null,
     );
     final primary = NeonButton(
-      label: step.primaryLabel,
+      label: step.primaryLabel.isEmpty ? tr('Next', 'Suivant') : step.primaryLabel,
       variant: step.primaryStyle == PrimaryStyle.red
           ? NeonVariant.red
           : NeonVariant.primary,
@@ -212,7 +213,7 @@ class _StepBody extends StatelessWidget {
         QuizPanel(spec: step.quiz!, onCount: game.setQuizCorrect),
       if (step.report != null) DownList(entries: step.report!),
       if (step.ddos != null && step.ddos!.upcoming.isNotEmpty)
-        Lbl('Next: ${step.ddos!.upcoming.join(' · ')}'),
+        Lbl(tr('Next: ', 'Ensuite : ') + step.ddos!.upcoming.join(' · ')),
       if (step.clock != null)
         CountdownClock(key: ValueKey(step.clock!.id), spec: step.clock!),
       if (step.tools != null)
@@ -233,8 +234,8 @@ class _StepBody extends StatelessWidget {
       if (step.reveal.isNotEmpty)
         NeonButton(
           label: step.reveal.length > 1
-              ? 'Show the cards again'
-              : 'Show the card again',
+              ? tr('Show the cards again', 'Remontrer les cartes')
+              : tr('Show the card again', 'Remontrer la carte'),
           variant: NeonVariant.ghost,
           height: 48,
           fontSize: 14,

@@ -3,6 +3,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import '../i18n.dart';
 
 import '../app_settings.dart';
 import '../theme/app_theme.dart';
@@ -27,7 +28,7 @@ class SettingsButton extends StatelessWidget {
         builder: (context, _) {
           final s = AppSettings.instance;
           return IconButton(
-            tooltip: 'Sound and Narrator settings',
+            tooltip: tr('Settings', 'Paramètres'),
             onPressed: () => showSettingsSheet(context),
             icon: Icon(
               s.gain == 0 ? Icons.volume_off_rounded : Icons.tune_rounded,
@@ -52,20 +53,43 @@ class _SettingsSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Settings'.toUpperCase(), style: AppText.ui(28, weight: FontWeight.w700)),
+                Text(tr('Settings', 'Paramètres').toUpperCase(), style: AppText.ui(28, weight: FontWeight.w700)),
                 const SizedBox(height: 18),
-                const Lbl('Sound'),
+                Lbl(tr('Language', 'Langue')),
+                const SizedBox(height: 8),
+                // Each language is written in its own language. Switching
+                // applies at once, even in the middle of a game.
+                SegmentedButton<AppLanguage>(
+                  segments: const [
+                    ButtonSegment(value: AppLanguage.en, label: Text('English')),
+                    ButtonSegment(value: AppLanguage.fr, label: Text('Français')),
+                  ],
+                  selected: {s.language},
+                  showSelectedIcon: false,
+                  onSelectionChanged: (v) => s.setLanguage(v.first),
+                  style: SegmentedButton.styleFrom(
+                    foregroundColor: AppColors.textSoft,
+                    selectedForegroundColor: AppColors.onAccent,
+                    selectedBackgroundColor: AppColors.primary,
+                    side: const BorderSide(color: AppColors.line),
+                    textStyle: AppText.body(15, weight: FontWeight.w600),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Lbl(tr('Sound', 'Son')),
                 const SizedBox(height: 4),
                 _SwitchRow(
-                  title: 'Sound',
-                  sub: s.soundOn ? 'Ambience and sound effects play' : 'Everything is muted',
+                  title: tr('Sound', 'Son'),
+                  sub: s.soundOn
+                      ? tr('Ambience and sound effects play', "L'ambiance et les effets sonores sont actifs")
+                      : tr('Everything is muted', 'Tout est coupé'),
                   value: s.soundOn,
                   onChanged: s.setSoundOn,
                 ),
                 Row(
                   children: [
                     IconButton(
-                      tooltip: s.soundOn ? 'Mute' : 'Unmute',
+                      tooltip: s.soundOn ? tr('Mute', 'Couper le son') : tr('Unmute', 'Remettre le son'),
                       onPressed: () => s.setSoundOn(!s.soundOn),
                       icon: Icon(
                         s.gain == 0 ? Icons.volume_off_rounded : Icons.volume_down_rounded,
@@ -80,7 +104,8 @@ class _SettingsSheet extends StatelessWidget {
                         inactiveColor: AppColors.line,
                         label: '${(s.volume * 100).round()} %',
                         divisions: 20,
-                        semanticFormatterCallback: (v) => 'Volume ${(v * 100).round()} percent',
+                        semanticFormatterCallback: (v) =>
+                            tr('Volume ${(v * 100).round()} percent', 'Volume ${(v * 100).round()} pour cent'),
                       ),
                     ),
                     SizedBox(
@@ -94,13 +119,14 @@ class _SettingsSheet extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 18),
-                const Lbl('Narrator'),
+                Lbl(tr('Narrator', 'Narrateur')),
                 const SizedBox(height: 4),
                 _SwitchRow(
-                  title: 'Narrator tips',
+                  title: tr('Narrator tips', 'Conseils au Narrateur'),
                   sub: s.narratorTips
-                      ? 'Beginner: each step explains what to do, with reminders'
-                      : 'Experienced: only the lines to read',
+                      ? tr('Beginner: each step explains what to do, with reminders',
+                          'Débutant : chaque étape explique quoi faire, avec des rappels')
+                      : tr('Experienced: only the lines to read', 'Expérimenté : seulement les phrases à lire'),
                   value: s.narratorTips,
                   onChanged: s.setNarratorTips,
                 ),

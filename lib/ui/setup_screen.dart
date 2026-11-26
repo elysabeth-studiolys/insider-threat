@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../i18n.dart';
 
 import '../game/compositions.dart';
 import '../game/models.dart';
@@ -44,16 +45,16 @@ class _SetupScreenState extends State<SetupScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Reset the players?'.toUpperCase(), style: AppText.ui(20, weight: FontWeight.w700)),
-        content: Text('Every name and role card will be cleared.', style: AppText.body(15)),
+        title: Text(tr('Reset the players?', 'Réinitialiser les joueurs ?').toUpperCase(), style: AppText.ui(20, weight: FontWeight.w700)),
+        content: Text(tr('Every name and role card will be cleared.', 'Tous les noms et toutes les cartes seront effacés.'), style: AppText.body(15)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(tr('Cancel', 'Annuler')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Reset', style: TextStyle(color: AppColors.danger)),
+            child: Text(tr('Reset', 'Réinitialiser'), style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),
@@ -88,7 +89,7 @@ class _SetupScreenState extends State<SetupScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
-                child: Lbl('Role card of player ${player + 1}'),
+                child: Lbl(tr('Role card of player ${player + 1}', 'Carte du joueur ${player + 1}')),
               ),
               for (final r in roleDisplayOrder)
                 ListTile(
@@ -136,7 +137,7 @@ class _SetupScreenState extends State<SetupScreen> {
                   children: [
                     TextButton(
                       onPressed: widget.onBack,
-                      child: Text('‹ Back',
+                      child: Text(tr('‹ Back', '‹ Retour'),
                           style: AppText.body(15, color: AppColors.muted)),
                     ),
                     const Spacer(),
@@ -150,7 +151,7 @@ class _SetupScreenState extends State<SetupScreen> {
                   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
                   children: [
-                    Text('Set the table'.toUpperCase(),
+                    Text(tr('Set the table', 'Préparer la table').toUpperCase(),
                         style: AppText.ui(32, weight: FontWeight.w700, height: 1.05)),
                     const SizedBox(height: 14),
                     _CountRow(
@@ -165,7 +166,7 @@ class _SetupScreenState extends State<SetupScreen> {
                     ),
                     const SizedBox(height: 24),
                     NeonButton(
-                      label: 'Scan the cards',
+                      label: tr('Scan the cards', 'Scanner les cartes'),
                       height: 50,
                       fontSize: 14,
                       onPressed: () => _openScan(),
@@ -175,7 +176,7 @@ class _SetupScreenState extends State<SetupScreen> {
                       children: [
                         Expanded(
                           child: NeonButton(
-                            label: 'Deal at random',
+                            label: tr('Deal at random', 'Distribuer au hasard'),
                             variant: NeonVariant.ghost,
                             height: 46,
                             fontSize: 13,
@@ -185,7 +186,7 @@ class _SetupScreenState extends State<SetupScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: NeonButton(
-                            label: 'Reset players',
+                            label: tr('Reset players', 'Réinitialiser'),
                             variant: NeonVariant.ghost,
                             height: 46,
                             fontSize: 13,
@@ -231,7 +232,7 @@ class _SetupScreenState extends State<SetupScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text('Expert mode (Event cards)',
+                          child: Text(tr('Expert mode (Event cards)', 'Mode Expert (cartes Event)'),
                               style: AppText.body(15, weight: FontWeight.w600)),
                         ),
                         Switch(
@@ -253,7 +254,7 @@ class _SetupScreenState extends State<SetupScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
                 child: NeonButton(
-                  label: s.blocker ?? 'Start the game',
+                  label: s.blocker ?? tr('Start the game', 'Lancer la partie'),
                   onPressed: s.canStart ? widget.onStart : null,
                 ),
               ),
@@ -288,9 +289,9 @@ class _CountRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text('Players', style: AppText.body(16, weight: FontWeight.w700)),
+            Text(tr('Players', 'Joueurs'), style: AppText.body(16, weight: FontWeight.w700)),
             IconButton(
-              tooltip: 'Recommended roles',
+              tooltip: tr('Recommended roles', 'Rôles conseillés'),
               onPressed: onInfo,
               visualDensity: VisualDensity.compact,
               icon: const Icon(Icons.info_outline_rounded,
@@ -298,7 +299,7 @@ class _CountRow extends StatelessWidget {
             ),
             const Spacer(),
             IconButton(
-              tooltip: 'Remove a player',
+              tooltip: tr('Remove a player', 'Retirer un joueur'),
               onPressed: onMinus,
               icon: const Icon(Icons.remove),
             ),
@@ -310,7 +311,7 @@ class _CountRow extends StatelessWidget {
                       weight: FontWeight.w700, color: AppColors.text)),
             ),
             IconButton(
-              tooltip: 'Add a player',
+              tooltip: tr('Add a player', 'Ajouter un joueur'),
               onPressed: onPlus,
               icon: const Icon(Icons.add),
             ),
@@ -372,15 +373,15 @@ class _PlayerRow extends StatelessWidget {
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   isDense: true,
-                  hintText: 'Player ${index + 1}',
+                  hintText: tr('Player ${index + 1}', 'Joueur ${index + 1}'),
                   hintStyle: AppText.body(18, color: AppColors.disabledText),
                 ),
               ),
             ),
             IconButton(
               tooltip: scanned
-                  ? 'Card scanned. Scan again for player ${index + 1}'
-                  : 'Scan the card of player ${index + 1}',
+                  ? tr('Card scanned. Scan again for player ${index + 1}', 'Carte scannée. Scanner à nouveau pour le joueur ${index + 1}')
+                  : tr('Scan the card of player ${index + 1}', 'Scanner la carte du joueur ${index + 1}'),
               onPressed: onScan,
               icon: Icon(
                 Icons.qr_code_scanner,
@@ -393,7 +394,7 @@ class _PlayerRow extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 130),
                 child: Text(
-                  role?.info.name ?? 'Pick role',
+                  role?.info.name ?? tr('Pick role', 'Choisir un rôle'),
                   textAlign: TextAlign.right,
                   style: AppText.body(12.5,
                       color: role == null ? AppColors.secondarySoft : AppColors.textSoft),
@@ -433,9 +434,9 @@ void _showRecommended(BuildContext context, int players, Composition rec) {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Recommended'.toUpperCase(), style: AppText.ui(28, weight: FontWeight.w700)),
+            Text(tr('Recommended', 'Conseillé').toUpperCase(), style: AppText.ui(28, weight: FontWeight.w700)),
             const SizedBox(height: 4),
-            Text('For $players players, from the rulebook.',
+            Text(tr('For $players players, from the rulebook.', 'Pour $players joueurs, selon les règles.'),
                 style: AppText.body(14, color: AppColors.muted)),
             const SizedBox(height: 12),
             for (final e in rec.counts.entries) row(e.key, e.value),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../i18n.dart';
 
 import 'package:flutter/material.dart';
 
@@ -548,7 +549,7 @@ class ToolsRow extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       _tool(
-        'Backup restore',
+        tr('Backup restore', 'Restaurer une sauvegarde'),
         spec.restoreSub,
         spec.restoreOn,
         spec.restoreEnabled,
@@ -557,7 +558,7 @@ class ToolsRow extends StatelessWidget {
       ),
       const SizedBox(width: 8),
       _tool(
-        'Kill process',
+        tr('Kill process', 'Tuer un processus'),
         spec.killSub,
         spec.killOn,
         spec.killEnabled,
@@ -636,10 +637,12 @@ class _CountdownClockState extends State<CountdownClock> {
     if (_left > _max) _max = _left;
   });
 
+  String get _clockLabel => widget.spec.label.isEmpty ? tr('Time left', 'Temps restant') : widget.spec.label;
+
   String get _status {
-    if (_left == 0) return "Time's up";
-    if (!_started) return 'Ready';
-    return _running ? 'Running' : 'Paused';
+    if (_left == 0) return tr("Time's up", 'Temps écoulé');
+    if (!_started) return tr('Ready', 'Prêt');
+    return _running ? tr('Running', 'En cours') : tr('Paused', 'En pause');
   }
 
   @override
@@ -651,11 +654,11 @@ class _CountdownClockState extends State<CountdownClock> {
     // Empty ring until the clock is started, then it drains.
     final progress = !_started || _max == 0 ? 0.0 : _left / _max;
     return Semantics(
-      label: '${widget.spec.label}: $_text, $_status',
+      label: '$_clockLabel: $_text, $_status',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Lbl(widget.spec.label),
+          Lbl(_clockLabel),
           const SizedBox(height: 10),
           Center(
             child: SizedBox(
@@ -754,7 +757,7 @@ class _RoundPlayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: running ? 'Pause' : 'Start',
+      label: running ? tr('Pause', 'Pause') : tr('Start', 'Démarrer'),
       child: Material(
         color: running ? AppColors.surfaceHigh : AppColors.primary,
         shape: const CircleBorder(),
@@ -798,7 +801,7 @@ class DownList extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Quiet night',
+                      tr('Quiet night', 'Nuit calme'),
                       style: AppText.body(
                         compact ? 15 : 17,
                         weight: FontWeight.w600,
@@ -806,7 +809,7 @@ class DownList extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'No machine offline',
+                    tr('No machine offline', 'Aucune machine tombée'),
                     style: AppText.body(13, color: AppColors.textSoft),
                   ),
                 ],
@@ -929,7 +932,7 @@ class TipCard extends StatelessWidget {
           TextSpan(
             children: [
               TextSpan(
-                text: 'Do  ',
+                text: tr('Do  ', 'À faire  '),
                 style: AppText.body(
                   14,
                   weight: FontWeight.w700,
@@ -969,7 +972,7 @@ class SecretCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Lbl('Narrator only', color: AppColors.primarySoft),
+        Lbl(tr('Narrator only', 'Narrateur uniquement'), color: AppColors.primarySoft),
         const SizedBox(height: 6),
         Text(text, style: AppText.body(14, height: 1.4)),
       ],

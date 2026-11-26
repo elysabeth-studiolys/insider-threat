@@ -121,7 +121,8 @@ class ClockSpec {
     required this.id,
     required this.seconds,
     this.controls = true,
-    this.label = 'Time left',
+    // Empty: the widget shows "Time left" in the current language.
+    this.label = '',
   });
 
   /// Changes whenever the clock must restart from scratch.
@@ -231,7 +232,8 @@ class GuideStep {
     this.quiz,
     this.canContinue = true,
     this.canBack = true,
-    this.primaryLabel = 'Next',
+    // Empty: the screen shows "Next" in the current language.
+    this.primaryLabel = '',
     this.primaryStyle = PrimaryStyle.primary,
     this.stepNo = 1,
     this.total = 1,

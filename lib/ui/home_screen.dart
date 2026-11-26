@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_theme.dart';
@@ -78,13 +79,13 @@ class HomeScreen extends StatelessWidget {
         ),
                 SizedBox(height: compact ? 16 : 24),
 
-        const TagChip('Narrator companion'),
+        TagChip(tr('Narrator companion', 'Compagnon du Narrateur')),
         SizedBox(height: compact ? 24 : 44),
 
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
           child: Text(
-            'A social deduction game on a compromised network.',
+            tr('A social deduction game on a compromised network.', 'Un jeu de déduction sociale sur un réseau compromis.'),
             textAlign: TextAlign.center,
             style: AppText.body(16,
                 weight: FontWeight.w400, color: AppColors.textSoft, height: 1.5),
@@ -93,19 +94,19 @@ class HomeScreen extends StatelessWidget {
       ];
 
   List<Widget> _actions(BuildContext context) => [
-        NeonButton(label: 'New game', onPressed: onNewGame),
+        NeonButton(label: tr('New game', 'Nouvelle partie'), onPressed: onNewGame),
         const SizedBox(height: 12),
         NeonButton(
-          label: 'Rules',
+          label: tr('Rules', 'Règles'),
           variant: NeonVariant.ghost,
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute<void>(builder: (_) => const RulesScreen()),
           ),
         ),
         const SizedBox(height: 14),
-        const SizedBox(
+        SizedBox(
           width: double.infinity,
-          child: Lbl('5-14 players + 1 Narrator · 15-40 min', align: TextAlign.center),
+          child: Lbl(tr('5-14 players + 1 Narrator · 15-40 min', '5-14 joueurs + 1 Narrateur · 15-40 min'), align: TextAlign.center),
         ),
       ];
 }

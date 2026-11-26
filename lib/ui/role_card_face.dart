@@ -3,6 +3,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import '../i18n.dart';
 
 import '../game/models.dart';
 import '../theme/app_theme.dart';
@@ -96,7 +97,7 @@ class RoleCardFace extends StatelessWidget {
                 child: Image.asset(
                   art,
                   fit: BoxFit.contain,
-                  semanticLabel: 'The ${info.name} character',
+                  semanticLabel: tr('The ${info.name} character', 'Le personnage ${info.name}'),
                 ),
               ),
             // Fade the feet into the surface so the name sits on a clean base.
@@ -240,7 +241,7 @@ class RoleCardBack extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: AppText.ui(52, color: AppColors.text, height: .9)),
                   const SizedBox(height: 14),
-                  const TeamBadge('Role card', AppColors.primary),
+                  TeamBadge(tr('Role card', 'Carte de rôle'), AppColors.primary),
                 ],
               ),
             ),

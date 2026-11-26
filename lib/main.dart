@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_settings.dart';
+import 'i18n.dart';
 import 'game/game_controller.dart';
 import 'game/guide_step.dart';
 import 'game/setup_controller.dart';
@@ -25,6 +26,8 @@ class InsiderThreatApp extends StatelessWidget {
         title: 'Insider Threat',
         debugShowCheckedModeBanner: false,
         theme: buildAppTheme(),
+        // Switching language in the settings rebuilds every screen in place.
+        builder: (context, child) => LanguageScope(child: child!),
         home: const AppRoot(),
       );
 }
@@ -95,16 +98,16 @@ class _AppRootState extends State<AppRoot> {
     final quit = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Quit this game?'.toUpperCase(), style: AppText.ui(20, weight: FontWeight.w700)),
-        content: Text('The current game will be lost.', style: AppText.body(15)),
+        title: Text(tr('Quit this game?', 'Quitter la partie ?').toUpperCase(), style: AppText.ui(20, weight: FontWeight.w700)),
+        content: Text(tr('The current game will be lost.', 'La partie en cours sera perdue.'), style: AppText.body(15)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep playing'),
+            child: Text(tr('Keep playing', 'Continuer')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Quit', style: TextStyle(color: AppColors.danger)),
+            child: Text(tr('Quit', 'Quitter'), style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),

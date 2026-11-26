@@ -4,6 +4,7 @@
 library;
 
 import 'dart:math';
+import '../i18n.dart';
 
 import 'package:flutter/material.dart';
 
@@ -98,10 +99,11 @@ class _RoleRevealScreenState extends State<_RoleRevealScreen>
     final many = widget.cards.length > 1;
     final last = _index == widget.cards.length - 1;
     final label = Lbl(many
-        ? 'For ${widget.viewer}  ·  Card ${_index + 1} / ${widget.cards.length}'
-        : 'For ${widget.viewer}');
+        ? tr('For ${widget.viewer}  ·  Card ${_index + 1} / ${widget.cards.length}',
+            'Pour ${widget.viewer}  ·  Carte ${_index + 1} / ${widget.cards.length}')
+        : tr('For ${widget.viewer}', 'Pour ${widget.viewer}'));
     final close = IconButton(
-      tooltip: 'Close',
+      tooltip: tr('Close', 'Fermer'),
       onPressed: () => Navigator.of(context).pop(),
       icon: const Icon(Icons.close_rounded, color: AppColors.textSoft),
     );
@@ -124,7 +126,7 @@ class _RoleRevealScreenState extends State<_RoleRevealScreen>
         child: Opacity(opacity: interval(_anim.value, .85, 1), child: child),
       ),
       child: NeonButton(
-        label: last ? 'Done' : 'Next card',
+        label: last ? tr('Done', 'Terminé') : tr('Next card', 'Carte suivante'),
         variant: last ? NeonVariant.ghost : NeonVariant.primary,
         onPressed: _next,
       ),

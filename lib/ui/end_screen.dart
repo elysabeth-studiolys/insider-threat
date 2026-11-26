@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../i18n.dart';
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -46,12 +47,12 @@ class _Ending {
   final SfxId sfx;
 
   static _Ending of(Winner w) => switch (w) {
-        Winner.blue => const _Ending(
-            label: 'Blue Team wins',
-            line1: 'Network',
-            line2: 'Secured',
-            say:
-                'All attackers have been quarantined. Network secured. The Blue Team wins!',
+        Winner.blue => _Ending(
+            label: tr('Blue Team wins', 'La Blue Team gagne'),
+            line1: tr('Network', 'Réseau'),
+            line2: tr('Secured', 'Sécurisé'),
+            say: tr('All attackers have been quarantined. Network secured. The Blue Team wins!',
+                'Tous les attaquants ont été mis en quarantaine. Réseau sécurisé. La Blue Team gagne !'),
             tag: '> threat_level: 0 // all attackers quarantined',
             icon: Icons.verified_user_rounded,
             color: AppColors.teamBlue,
@@ -59,12 +60,12 @@ class _Ending {
             fx: _Fx.shield,
             sfx: SfxId.revealBlue,
           ),
-        Winner.red => const _Ending(
-            label: 'Red Team wins',
-            line1: 'Network',
-            line2: 'Breached',
-            say:
-                'The last defender has fallen. Network breached. The Red Team wins!',
+        Winner.red => _Ending(
+            label: tr('Red Team wins', 'La Red Team gagne'),
+            line1: tr('Network', 'Réseau'),
+            line2: tr('Breached', 'Compromis'),
+            say: tr('The last defender has fallen. Network breached. The Red Team wins!',
+                'Le dernier défenseur est tombé. Réseau compromis. La Red Team gagne !'),
             tag: '> root access granted // defenders: 0',
             icon: Icons.gpp_bad_rounded,
             color: AppColors.teamRed,
@@ -72,12 +73,12 @@ class _Ending {
             fx: _Fx.breach,
             sfx: SfxId.revealRed,
           ),
-        Winner.purple => const _Ending(
-            label: 'Purple Team wins',
-            line1: 'Last machine',
-            line2: 'Standing',
-            say:
-                'Only one machine is left on the network. The double agent wins. The Purple Team wins!',
+        Winner.purple => _Ending(
+            label: tr('Purple Team wins', 'La Purple Team gagne'),
+            line1: tr('Last machine', 'Dernière machine'),
+            line2: tr('Standing', 'Debout'),
+            say: tr('Only one machine is left on the network. The double agent wins. The Purple Team wins!',
+                "Il ne reste qu'une machine sur le réseau. L'agent double gagne. La Purple Team gagne !"),
             tag: '> double agent identified // too late',
             icon: Icons.theater_comedy_rounded,
             color: AppColors.teamPurple,
@@ -85,12 +86,12 @@ class _Ending {
             fx: _Fx.spotlight,
             sfx: SfxId.revealChaos,
           ),
-        Winner.vpn => const _Ending(
-            label: 'VPN Tunnel wins',
+        Winner.vpn => _Ending(
+            label: tr('VPN Tunnel wins', 'Le VPN Tunnel gagne'),
             line1: 'Tunnel',
-            line2: 'Intact',
-            say:
-                'The last two machines are linked by a VPN tunnel. The VPN Tunnel wins!',
+            line2: tr('Intact', 'Intact'),
+            say: tr('The last two machines are linked by a VPN tunnel. The VPN Tunnel wins!',
+                'Les deux dernières machines sont reliées par un tunnel VPN. Le VPN Tunnel gagne !'),
             tag: '> encrypted link up // 2 peers online',
             icon: Icons.vpn_lock_rounded,
             color: AppColors.primary,
@@ -98,12 +99,12 @@ class _Ending {
             fx: _Fx.tunnel,
             sfx: SfxId.revealChaos,
           ),
-        Winner.outage => const _Ending(
-            label: 'Nobody wins',
-            line1: 'Total',
-            line2: 'Outage',
-            say:
-                'Every machine went down at the same time. Total outage. Nobody wins.',
+        Winner.outage => _Ending(
+            label: tr('Nobody wins', 'Personne ne gagne'),
+            line1: tr('Total', 'Panne'),
+            line2: tr('Outage', 'Totale'),
+            say: tr('Every machine went down at the same time. Total outage. Nobody wins.',
+                'Toutes les machines sont tombées en même temps. Panne totale. Personne ne gagne.'),
             tag: '> no signal // 0 machines online',
             icon: Icons.power_off_rounded,
             color: Cod.c300,
@@ -132,7 +133,8 @@ class _EndScreenState extends State<EndScreen> with TickerProviderStateMixin {
   static const _slam = 0.36;
   static const _impact = 0.46;
 
-  late final _Ending _end = _Ending.of(widget.game.winner!);
+  // A getter, not a cached value: the texts follow the language setting.
+  _Ending get _end => _Ending.of(widget.game.winner!);
   late final AnimationController _intro = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2800),
@@ -271,8 +273,8 @@ class _EndScreenState extends State<EndScreen> with TickerProviderStateMixin {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const TagChip('Game over'),
-                Lbl('Day ${game.night.toString().padLeft(2, '0')}'),
+                TagChip(tr('Game over', 'Partie terminée')),
+                Lbl(tr('Day ', 'Jour ') + game.night.toString().padLeft(2, '0')),
               ],
             ),
           ),
@@ -299,7 +301,7 @@ class _EndScreenState extends State<EndScreen> with TickerProviderStateMixin {
                   children: [
                     Expanded(
                       child: _Stat(
-                        label: 'Machines online',
+                        label: tr('Machines online', 'Machines en ligne'),
                         value:
                             '${(alive * _seg(t, .62, .8)).round()}/$total',
                         color: _end.color,
@@ -308,7 +310,7 @@ class _EndScreenState extends State<EndScreen> with TickerProviderStateMixin {
                     const SizedBox(width: 10),
                     Expanded(
                       child: _Stat(
-                        label: 'Days survived',
+                        label: tr('Days survived', 'Jours tenus'),
                         value:
                             '${(game.night * _seg(t, .62, .8)).round()}'.padLeft(2, '0'),
                         color: _end.color,
@@ -320,7 +322,7 @@ class _EndScreenState extends State<EndScreen> with TickerProviderStateMixin {
               const SizedBox(height: 14),
               if (t >= .7) _reveal(t, .7, SayCard(text: _end.say)),
               const SizedBox(height: 16),
-              _reveal(t, .76, const Lbl('Roles revealed')),
+              _reveal(t, .76, Lbl(tr('Roles revealed', 'Rôles révélés'))),
               const SizedBox(height: 8),
               GridView.builder(
                 shrinkWrap: true,
@@ -356,7 +358,7 @@ class _EndScreenState extends State<EndScreen> with TickerProviderStateMixin {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
             child: NeonButton(
-              label: 'New game',
+              label: tr('New game', 'Nouvelle partie'),
               onPressed: t > .9 ? widget.onNewGame : null,
             ),
           ),
