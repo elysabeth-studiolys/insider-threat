@@ -83,7 +83,7 @@ export default function App() {
           <span>Insider Threat</span>
         </a>
         <nav className="topbar__nav">
-          <a href="#cards" className="chip chip--link">Print the cards</a>
+          <a href="#cards" className="btn btn--ghost btn--sm">Print the cards</a>
           {LINKS.web && (
             <a href={LINKS.web} className="btn btn--primary btn--sm" target="_blank" rel="noopener noreferrer">
               <span className="btn__icon"><PlayIcon /></span>
