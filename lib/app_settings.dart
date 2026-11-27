@@ -2,8 +2,6 @@
 /// phone so they survive a restart.
 library;
 
-import 'dart:ui' show PlatformDispatcher;
-
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,10 +28,9 @@ class AppSettings extends ChangeNotifier {
   /// Shows the extra "what to do" line under each step, for new Narrators.
   bool narratorTips = true;
 
-  /// Language of the whole app. Defaults to the phone's language (French if
-  /// the phone is in French, English otherwise).
-  AppLanguage language =
-      PlatformDispatcher.instance.locale.languageCode == 'fr' ? AppLanguage.fr : AppLanguage.en;
+  /// Language of the whole app. English by default; French can be picked in
+  /// the settings.
+  AppLanguage language = AppLanguage.en;
 
   /// What every sound is multiplied by.
   double get gain => soundOn ? volume : 0;
